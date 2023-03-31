@@ -10,12 +10,12 @@ if (process.env.LOAD_ENV) {
     path: path.join(__dirname, '../.env'),
   });
 }
-const DEFAULT_CLIENT_ID = 'dummy-acme-client-id';
-const DEFAULT_CLIENT_SECRET = 'dummy-acme-client-secret';
+const DEFAULT_TOKEN = 'dummy-token';
+const DEFAULT_BASE_URL = 'https://example.com';
 
 export const integrationConfig: IntegrationConfig = {
-  clientId: process.env.CLIENT_ID || DEFAULT_CLIENT_ID,
-  clientSecret: process.env.CLIENT_SECRET || DEFAULT_CLIENT_SECRET,
+  token: process.env.TOKEN || DEFAULT_TOKEN,
+  baseUrl: process.env.BASE_URL || DEFAULT_BASE_URL,
 };
 
 export function buildStepTestConfigForStep(stepId: string): StepTestConfig {
