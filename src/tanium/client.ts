@@ -5,7 +5,8 @@ import {
   IntegrationProviderAuthorizationError,
 } from '@jupiterone/integration-sdk-core';
 import { GaxiosError, GaxiosOptions, request } from 'gaxios';
-import { IntegrationConfig } from './config';
+import { IntegrationConfig } from '../config';
+import { Endpoint, EndpointConnection } from './types';
 
 export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
 
@@ -19,6 +20,34 @@ export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
  */
 export class APIClient {
   constructor(readonly config: IntegrationConfig) {}
+
+  public async iterateEndpoints(
+    iteratee: ResourceIteratee<Endpoint>,
+  ): Promise<void> {
+    let hasNextPage = false;
+    let cursor = undefined;
+    do {
+      const response = await this.makeRequest<{
+        data: { endpoints: EndpointConnection };
+      }>({
+        url: '/plugin/products/gateway/graphql',
+        method: 'POST',
+        data: {
+          query: Queries.ENDPOINT_QUERY,
+          variables: {
+            after: cursor,
+          },
+        },
+      });
+
+      cursor = response.data?.data?.endpoints.pageInfo.endCursor;
+      hasNextPage = response.data?.data?.endpoints.pageInfo.hasNextPage;
+      console.log(response.data.data.endpoints.edges[0]);
+      for (const edge of response.data?.data?.endpoints?.edges || []) {
+        await iteratee(edge.node);
+      }
+    } while (hasNextPage);
+  }
 
   public async verifyAuthentication(): Promise<void> {
     const url = '/api/v2/session/validate';
@@ -40,13 +69,14 @@ export class APIClient {
     }
   }
 
-  private async makeRequest(
+  private async makeRequest<T>(
     opts: Pick<GaxiosOptions, 'url' | 'method' | 'data' | 'headers' | 'params'>,
   ) {
     try {
-      return await request({
+      return await request<T>({
         baseUrl: this.config.baseUrl,
         headers: {
+          'Content-Type': 'application/json',
           session: this.config.token,
         },
         ...opts,
