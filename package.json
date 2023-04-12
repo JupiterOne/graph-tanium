@@ -56,5 +56,8 @@
       "noChangelog": true,
       "prerelease": false
     }
+  },
+  "dependencies": {
+    "gaxios": "^5.1.0"
   }
 }

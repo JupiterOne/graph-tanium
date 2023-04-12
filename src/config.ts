@@ -22,6 +22,7 @@ export const instanceConfigFields: IntegrationInstanceConfigFieldMap = {
  */
 export interface IntegrationConfig extends IntegrationInstanceConfig {
   token: string;
+  baseUrl: string;
 }
 
 export async function validateInvocation(
