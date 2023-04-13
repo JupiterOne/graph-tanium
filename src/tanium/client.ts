@@ -42,7 +42,6 @@ export class APIClient {
 
       cursor = response.data?.data?.endpoints.pageInfo.endCursor;
       hasNextPage = response.data?.data?.endpoints.pageInfo.hasNextPage;
-      console.log(response.data.data.endpoints.edges[0]);
       for (const edge of response.data?.data?.endpoints?.edges || []) {
         await iteratee(edge.node);
       }
