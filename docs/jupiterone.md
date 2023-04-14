@@ -95,9 +95,18 @@ https://github.com/JupiterOne/sdk/blob/main/docs/integrations/development.md
 
 The following entities are created:
 
-| Resources | Entity `_type`   | Entity `_class` |
-| --------- | ---------------- | --------------- |
-| Account   | `tanium_account` | `Account`       |
+| Resources | Entity `_type`    | Entity `_class` |
+| --------- | ----------------- | --------------- |
+| Account   | `tanium_account`  | `Account`       |
+| Endpoint  | `tanium_endpoint` | `Host`          |
+
+### Relationships
+
+The following relationships are created:
+
+| Source Entity `_type` | Relationship `_class` | Target Entity `_type` |
+| --------------------- | --------------------- | --------------------- |
+| `tanium_account`      | **HAS**               | `tanium_endpoint`     |
 
 <!--
 ********************************************************************************

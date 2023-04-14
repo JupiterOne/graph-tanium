@@ -1,0 +1,7 @@
+schema: tools/schema.graphql
+generates:
+  src/tanium/types.ts:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'

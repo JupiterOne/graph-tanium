@@ -4,7 +4,7 @@ import {
   IntegrationInstanceConfigFieldMap,
   IntegrationInstanceConfig,
 } from '@jupiterone/integration-sdk-core';
-import { createAPIClient } from './client';
+import { createAPIClient } from './tanium/client';
 
 export const instanceConfigFields: IntegrationInstanceConfigFieldMap = {
   token: {
