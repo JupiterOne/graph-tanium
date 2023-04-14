@@ -1,5 +1,5 @@
 import { createIntegrationEntity } from '@jupiterone/integration-sdk-core';
-import { Endpoint } from '../../tanium/types';
+import { Endpoint } from '../../tanium/gql-types';
 import { Entities } from '../constants';
 
 export function createEndpointEntityKey(id: string) {

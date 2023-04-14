@@ -99,6 +99,7 @@ The following entities are created:
 | --------- | ----------------- | --------------- |
 | Account   | `tanium_account`  | `Account`       |
 | Endpoint  | `tanium_endpoint` | `Host`          |
+| User      | `tanium_user`     | `User`          |
 
 ### Relationships
 
@@ -106,6 +107,7 @@ The following relationships are created:
 
 | Source Entity `_type` | Relationship `_class` | Target Entity `_type` |
 | --------------------- | --------------------- | --------------------- |
+| `tanium_account`      | **HAS**               | `tanium_endpoint`     |
 | `tanium_account`      | **HAS**               | `tanium_endpoint`     |
 
 <!--

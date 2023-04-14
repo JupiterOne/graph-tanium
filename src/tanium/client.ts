@@ -6,7 +6,9 @@ import {
 } from '@jupiterone/integration-sdk-core';
 import { GaxiosError, GaxiosOptions, request } from 'gaxios';
 import { IntegrationConfig } from '../config';
-import { Endpoint, EndpointConnection } from './types';
+import { Endpoint, EndpointConnection } from './gql-types';
+import { Queries } from './queries';
+import { TaniumUser } from './rest-types';
 
 export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
 
@@ -20,6 +22,15 @@ export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
  */
 export class APIClient {
   constructor(readonly config: IntegrationConfig) {}
+
+  public async iterateUsers(iteratee: ResourceIteratee<TaniumUser>) {
+    const response = await this.makeRequest<{ data: TaniumUser[] }>({
+      url: '/api/v2/users',
+    });
+    for (const user of response.data.data) {
+      await iteratee(user);
+    }
+  }
 
   public async iterateEndpoints(
     iteratee: ResourceIteratee<Endpoint>,

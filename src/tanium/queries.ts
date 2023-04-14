@@ -22,7 +22,7 @@
   sentinel: EndpointSentinel!
     */
 
-enum Queries {
+export enum Queries {
   ENDPOINT_QUERY = `query endpoints(
       $after: Cursor,
       $first: Int,
