@@ -108,7 +108,7 @@ The following relationships are created:
 | Source Entity `_type` | Relationship `_class` | Target Entity `_type` |
 | --------------------- | --------------------- | --------------------- |
 | `tanium_account`      | **HAS**               | `tanium_endpoint`     |
-| `tanium_account`      | **HAS**               | `tanium_endpoint`     |
+| `tanium_account`      | **HAS**               | `tanium_user`         |
 
 <!--
 ********************************************************************************

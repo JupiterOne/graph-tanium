@@ -45,7 +45,7 @@ export const Relationships: Record<
   },
   ACCOUNT_HAS_USER: {
     sourceType: Entities.ACCOUNT._type,
-    targetType: Entities.ENDPOINT._type,
+    targetType: Entities.USER._type,
     _type: 'tanium_account_has_user',
     _class: RelationshipClass.HAS,
   },
