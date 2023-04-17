@@ -41,6 +41,7 @@ function redact(entry): void {
     entry.request.postData.text = '[REDACTED]';
   }
 
+  const requestUrl = entry.request.url;
   if (!entry.response.content.text) {
     return;
   }
@@ -48,7 +49,18 @@ function redact(entry): void {
   //let's unzip the entry so we can modify it
   mutations.unzipGzippedRecordingEntry(entry);
 
-  const requestUrl = entry.request.url;
+  if (requestUrl.includes('api/v2/users')) {
+    const body = JSON.parse(entry.response.content.text);
+    for (let i = 0; i < body.data.length; i++) {
+      const data = body.data[i];
+      if (data.name.includes('@')) {
+        data.name = 'first.last@example.com';
+      }
+      body.data[i] = data;
+    }
+    entry.response.content.text = JSON.stringify(body);
+  }
+
   if (requestUrl.match(/api\/v2\/session\/validate/)) {
     entry.response.content.text = JSON.stringify(
       getRedactedTokenValidationResponse(),
