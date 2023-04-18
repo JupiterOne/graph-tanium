@@ -11,12 +11,7 @@ export function createEndpointEntity(endpoint: Endpoint) {
     (v) => v !== '[results currently unavailable]',
   );
 
-  const osVersion =
-    endpoint.os.platform === 'Windows'
-      ? endpoint.os.windows?.majorVersion
-      : versionNumFromOsName(endpoint.os.name);
-
-  const osName = endpoint.os.name.slice(0, endpoint.os.name.lastIndexOf(' '));
+  let { osVersion, osName } = parseOsDetails(endpoint.os.name);
 
   return createIntegrationEntity({
     entityData: {
@@ -50,8 +45,17 @@ export function createEndpointEntity(endpoint: Endpoint) {
   });
 }
 
-const versionNumberRegex = new RegExp(/\b\w*\(*\d+(\.\d+)*\)*\b/);
-function versionNumFromOsName(name: string): string | undefined {
-  const osVersionArr = versionNumberRegex.exec(name);
-  return osVersionArr?.length ? osVersionArr[0] : undefined;
+export function parseOsDetails(name: string) {
+  const splitName = name.split(' ');
+  let matches: RegExpMatchArray | null | undefined;
+  let i = splitName.length - 1;
+  for (; i >= 0; i--) {
+    matches = splitName[i].match(/\(?(\d+(?:\.\d+)*|\d+)\)?/);
+    if (matches?.length) break;
+  }
+
+  return {
+    osName: splitName.slice(0, i).join(' '),
+    osVersion: matches?.pop(),
+  };
 }
