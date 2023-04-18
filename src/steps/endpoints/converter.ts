@@ -10,6 +10,14 @@ export function createEndpointEntity(endpoint: Endpoint) {
   const macAddress = endpoint.macAddresses?.filter(
     (v) => v !== '[results currently unavailable]',
   );
+
+  const osVersion =
+    endpoint.os.platform === 'Windows'
+      ? endpoint.os.windows?.majorVersion
+      : versionNumFromOsName(endpoint.os.name);
+
+  const osName = endpoint.os.name.slice(0, endpoint.os.name.lastIndexOf(' '));
+
   return createIntegrationEntity({
     entityData: {
       source: endpoint,
@@ -29,13 +37,10 @@ export function createEndpointEntity(endpoint: Endpoint) {
         macAddress,
         computerId: endpoint.computerID,
         systemUuid: endpoint.systemUUID,
-        osName: endpoint.os.name,
+        osName,
         systemLanguage: endpoint.os.language,
         platform: endpoint.os.platform.toLowerCase(),
-        osVersion:
-          endpoint.os.platform === 'Windows'
-            ? endpoint.os.windows?.majorVersion
-            : versionNumFromOsName(endpoint.os.name),
+        osVersion,
         riskScore: endpoint.risk?.totalScore,
         riskLevel: endpoint.risk?.riskLevel,
         criticalityScore: endpoint.risk?.criticalityScore,
