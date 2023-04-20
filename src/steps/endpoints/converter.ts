@@ -11,7 +11,7 @@ export function createEndpointEntity(endpoint: Endpoint) {
     (v) => v !== '[results currently unavailable]',
   );
 
-  let { osVersion, osName } = parseOsDetails(endpoint.os.name);
+  const { osVersion, osName } = parseOsDetails(endpoint.os.name);
 
   return createIntegrationEntity({
     entityData: {
