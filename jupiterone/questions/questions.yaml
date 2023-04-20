@@ -1,15 +1,78 @@
 ---
 sourceId: managed:template
 integrationDefinitionId: '${integration_definition_id}'
-questions: []
-  # - id: integration-question-template-replace-me
-  #   title: What kinds of questions will this integration support?
-  #   description:
-  #     TODO Every integration should contribute questions! Please be carefule
-  #     to replace this before deploying the integration to JupiterOne.
-  #   queries:
-  #     - name: good
-  #       query: |
-  #         find * with _integrationDefinitionId = '${integration_definition_id}'
-  #   tags:
-  #     - template
+questions: 
+  - id: tanium-hosts
+    title: What endpoints has tanium identified?
+    description:
+      Show all tanium_endpoint entities
+    queries:
+      - name: Tanium Endpoints
+        results_are: INFORMATIVE
+        query: |
+          find tanium_endpoint
+    tags:
+      - devices
+      - tanium
+
+  - id: tanium-users
+    title: Which user have a tanium account?
+    description:
+      Show all tanium_user entities
+    queries:
+      - name: Tanium Users
+        results_are: INFORMATIVE
+        query: |
+          find tanium_user
+    tags:
+      - users
+      - tanium
+
+  - id: tanium-hosts-using-platform
+    title: Find tanium endpoints by OS platform
+    description: Find tanium endpoints using a specific platform (Windows, macOS, Linux).
+    queries:
+      - name: Tanium Endpoints Using Linux
+        results_are: INFORMATIVE
+        query: |
+          find tanium_endpoint with platform = "linux"
+      - name: Tanium Endpoints Using MacOS
+        results_are: INFORMATIVE
+        query: |
+          find tanium_endpoint with platform = "mac"
+      - name: Tanium Endpoints Using Windows
+        results_are: INFORMATIVE
+        query: |
+          find tanium_endpoints with platform = "windows"
+
+      - name: Tanium Endpoints Using Solaris
+        results_are: INFORMATIVE
+        query: |
+          find tanium_endpoint with platform = "solaris"
+      - name: Tanium Endpoints Using AIX
+        results_are: INFORMATIVE
+        query: |
+          find tanium_endpoint with platform = "aix"
+      - name: Tanium Endpoint Using Unknown Platform
+        results_are: INFORMATIVE
+        query: |
+          find tanium_endpoint with platform = "unknown"
+    tags:
+      - endpoint management
+      - devices
+      - tanium
+  - id: tanium-endpoints-by-os-and-version
+    title: Summarize tanium_endpoints by their operating system and version
+    description: Returns a summary of the operating system and version pairs found in your Tanium environment
+    queries:
+      - name: Summarize Tanium Endpoints' OS and Versions
+        results_are: INFORMATIVE
+        query: |
+          find tanium_endpoint as te return CONCAT(te.osName,\" \", te.osVersion) as \"OS\", count(te) as \"# of Assets\"
+    tags:
+      - endpoint management
+      - devices
+      - operating systems
+      - tanium
+
+
