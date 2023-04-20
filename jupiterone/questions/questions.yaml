@@ -1,5 +1,5 @@
 ---
-sourceId: managed:template
+sourceId: managed:tanium
 integrationDefinitionId: '${integration_definition_id}'
 questions: 
   - id: tanium-hosts
