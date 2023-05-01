@@ -1,48 +1,17 @@
-# {{provider}}
-
-## Integration Benefits
-
-TODO: Iterate the benefits of ingesting data from the provider into JupiterOne.
-Consider the following examples:
-
-- Visualize {{provider}} services, teams, and users in the JupiterOne graph.
-- Map {{provider}} users to employees in your JupiterOne account.
-- Monitor changes to {{provider}} users using JupiterOne alerts.
-
-## How it Works
-
-TODO: Iterate significant activities the integration enables. Consider the
-following examples:
-
-- JupiterOne periodically fetches services, teams, and users from {{provider}}
-  to update the graph.
-- Write JupiterOne queries to review and monitor updates to the graph, or
-  leverage existing queries.
-- Configure alerts to take action when JupiterOne graph changes, or leverage
-  existing alerts.
-
-## Prerequisites
-
-TODO: Iterate requirements for setting up the integration. Consider the
-following examples:
-
-- {{provider}} supports the OAuth2 Client Credential flow. You must have a
-  Administrator user account.
-- JupiterOne requires a REST API key. You need permission to create a user in
-  {{provider}} that is used to obtain the API key.
-- You must have permission in JupiterOne to install new integrations.
+# Tanium
 
 ## Support
 
 If you need help with this integration, contact
 [JupiterOne Support](https://support.jupiterone.io).
 
+## Prerequisites
+
+- You must have permission in JupiterOne to install new integrations.
+
 ## How to Use This Integration
 
-### In {{provider}}
-
-TODO: List specific actions that must be taken in the provider. Remove this
-section when there are no actions to take in the provider.
+### In Tanium
 
 1. [Generate a REST API key](https://example.com/docs/generating-api-keys)
 

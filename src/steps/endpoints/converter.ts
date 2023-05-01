@@ -10,6 +10,9 @@ export function createEndpointEntity(endpoint: Endpoint) {
   const macAddress = endpoint.macAddresses?.filter(
     (v) => v !== '[results currently unavailable]',
   );
+
+  const { osVersion, osName } = parseOsDetails(endpoint.os.name);
+
   return createIntegrationEntity({
     entityData: {
       source: endpoint,
@@ -29,7 +32,30 @@ export function createEndpointEntity(endpoint: Endpoint) {
         macAddress,
         computerId: endpoint.computerID,
         systemUuid: endpoint.systemUUID,
+        osName,
+        systemLanguage: endpoint.os.language,
+        platform: endpoint.os.platform.toLowerCase(),
+        osVersion,
+        riskScore: endpoint.risk?.totalScore,
+        riskLevel: endpoint.risk?.riskLevel,
+        criticalityScore: endpoint.risk?.criticalityScore,
+        assetCriticality: endpoint.risk?.assetCriticality,
       },
     },
   });
+}
+
+export function parseOsDetails(name: string) {
+  const splitName = name.split(' ');
+  let matches: RegExpMatchArray | null | undefined;
+  let i = splitName.length - 1;
+  for (; i >= 0; i--) {
+    matches = splitName[i].match(/\(?(\d+(?:\.\d+)*|\d+)\)?/);
+    if (matches?.length) break;
+  }
+
+  return {
+    osName: splitName.slice(0, i).join(' '),
+    osVersion: matches?.pop(),
+  };
 }
