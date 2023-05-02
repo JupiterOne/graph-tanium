@@ -26,6 +26,10 @@
 If you need help with this integration, contact
 [JupiterOne Support](https://support.jupiterone.io).
 
+## Prerequisites
+
+- You must have permission in JupiterOne to install new integrations.
+
 ## How to Use This Integration
 
 ### In Tanium

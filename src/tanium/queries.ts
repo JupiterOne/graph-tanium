@@ -57,6 +57,24 @@ export enum Queries {
             ipAddress
             ipAddresses
             macAddresses
+            os {
+             name
+             platform
+             generation
+             language
+             windows {
+               type
+               majorVersion
+               releaseId
+             }
+            }
+            risk {
+              totalScore
+              riskLevel
+              assetCriticality
+              criticalityScore
+            }
+
           }
         }
         pageInfo {
