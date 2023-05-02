@@ -21,15 +21,6 @@
 - The user who creates the API Key must have the `API Gateway User` role.
 - You must have permission in JupiterOne to install new integrations.
 
-## Support
-
-If you need help with this integration, contact
-[JupiterOne Support](https://support.jupiterone.io).
-
-## Prerequisites
-
-- You must have permission in JupiterOne to install new integrations.
-
 ## How to Use This Integration
 
 ### In Tanium
