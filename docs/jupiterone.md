@@ -63,18 +63,18 @@ If you need help with this integration, contact
 - Select a polling interval that is sufficient for your monitoring requirements.
   You can leave this as `DISABLED` and manually execute the integration.
 - Enter the **API Token** generated for use by JupiterOne.
-- Enter the hostname for your Tanium instances API. The endpoint will look like
+- Enter the base URL for your Tanium instance's API. The endpoint will look like
   `https://<customerName>-api.cloud.tanium.com`
 
-4. Click **Create Configuration** after you have entered all the values.
+4. Click **Create** after you have entered all the values.
 
 ## How to Uninstall
 
 1. From the top navigation of the J1 Search homepage, select **Integrations**.
 2. Scroll down to **Tanium** and click it.
-3. Identify and click the **integration to delete**.
+3. Identify and click the **instance to delete**.
 4. Click the trash can icon.
-5. Click **Remove** to delete the integration.
+5. Click **Delete** to delete the integration.
 
 <!-- {J1_DOCUMENTATION_MARKER_START} -->
 <!--
