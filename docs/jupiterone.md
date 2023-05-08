@@ -32,17 +32,17 @@
 4. If you are running the integration in JupiterOne then add the following IPs
    to the Trusted IP list.
    - Running in US Region:
-     - 18.219.33.157
-     - 18.218.86.86
-     - 52.14.136.234
+     - 18.219.33.157/0
+     - 18.218.86.86/0
+     - 52.14.136.234/0
    - Running in Cisco US Region:
-     - 34.233.148.77
-     - 44.199.84.191
-     - 52.21.5.206
+     - 34.233.148.77/0
+     - 44.199.84.191/0
+     - 52.21.5.206/0
    - Running in EU Region:
-     - 3.67.240.226
-     - 52.28.3.30
-     - 3.121.249.173
+     - 3.67.240.226/0
+     - 52.28.3.30/0
+     - 3.121.249.173/0
 5. Copy your API Token for use in JupiterOne.
 
 ### In JupiterOne
