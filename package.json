@@ -59,7 +59,6 @@
     ],
     "onlyPublishWithReleaseLabel": true,
     "shipit": {
-      "noChangelog": true,
       "prerelease": false
     }
   },
