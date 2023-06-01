@@ -54,7 +54,6 @@ export class APIClient {
         },
       });
 
-      console.log(response.data.data);
       cursor = response.data?.data?.assetProductEndpoints.pageInfo.endCursor;
       hasNextPage =
         response.data?.data?.assetProductEndpoints.pageInfo.hasNextPage;
