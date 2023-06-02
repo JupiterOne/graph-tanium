@@ -38,13 +38,15 @@ async function fetchEndpoints({
   const client = createAPIClient(instance.config);
   await client.iterateEndpoints(async (endpoint) => {
     const endpointEntity = createEndpointEntity(endpoint);
-    await jobState.addEntity(endpointEntity);
-    await jobState.addRelationship(
-      createDirectRelationship({
-        from: accountEntity,
-        to: endpointEntity,
-        _class: RelationshipClass.HAS,
-      }),
-    );
+    if (endpointEntity) {
+      await jobState.addEntity(endpointEntity);
+      await jobState.addRelationship(
+        createDirectRelationship({
+          from: accountEntity,
+          to: endpointEntity,
+          _class: RelationshipClass.HAS,
+        }),
+      );
+    }
   });
 }

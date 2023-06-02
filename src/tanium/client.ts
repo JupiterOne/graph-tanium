@@ -6,7 +6,10 @@ import {
 } from '@jupiterone/integration-sdk-core';
 import { GaxiosError, GaxiosOptions, request } from 'gaxios';
 import { IntegrationConfig } from '../config';
-import { Endpoint, EndpointConnection } from './gql-types';
+import {
+  AssetProductEndpoint,
+  AssetProductEndpointConnection,
+} from './gql-types';
 import { Queries } from './queries';
 import { TaniumUser } from './rest-types';
 
@@ -33,13 +36,13 @@ export class APIClient {
   }
 
   public async iterateEndpoints(
-    iteratee: ResourceIteratee<Endpoint>,
+    iteratee: ResourceIteratee<AssetProductEndpoint>,
   ): Promise<void> {
     let hasNextPage = false;
     let cursor = undefined;
     do {
       const response = await this.makeRequest<{
-        data: { endpoints: EndpointConnection };
+        data: { assetProductEndpoints: AssetProductEndpointConnection };
       }>({
         url: '/plugin/products/gateway/graphql',
         method: 'POST',
@@ -51,10 +54,14 @@ export class APIClient {
         },
       });
 
-      cursor = response.data?.data?.endpoints.pageInfo.endCursor;
-      hasNextPage = response.data?.data?.endpoints.pageInfo.hasNextPage;
-      for (const edge of response.data?.data?.endpoints?.edges || []) {
-        await iteratee(edge.node);
+      cursor = response.data?.data?.assetProductEndpoints.pageInfo.endCursor;
+      hasNextPage =
+        response.data?.data?.assetProductEndpoints.pageInfo.hasNextPage;
+      for (const edge of response.data?.data?.assetProductEndpoints?.edges ||
+        []) {
+        if (edge) {
+          await iteratee(edge.node);
+        }
       }
     } while (hasNextPage);
   }

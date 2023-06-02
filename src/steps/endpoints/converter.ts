@@ -1,48 +1,38 @@
 import { createIntegrationEntity } from '@jupiterone/integration-sdk-core';
-import { Endpoint } from '../../tanium/gql-types';
+import { AssetProductEndpoint } from '../../tanium/gql-types';
 import { Entities } from '../constants';
 
-export function createEndpointEntityKey(id: string) {
+export function createEndpointEntityKey(id: number) {
   return `${Entities.ENDPOINT._type}:${id}`;
 }
 
-export function createEndpointEntity(endpoint: Endpoint) {
-  const macAddress = endpoint.macAddresses?.filter(
-    (v) => v !== '[results currently unavailable]',
-  );
-
-  const { osVersion, osName } = parseOsDetails(endpoint.os.name);
-
-  return createIntegrationEntity({
-    entityData: {
-      source: endpoint,
-      assign: {
-        _key: createEndpointEntityKey(endpoint.id),
-        _class: Entities.ENDPOINT._class,
-        _type: Entities.ENDPOINT._type,
-        name: endpoint.name,
-        displayName: endpoint.name,
-        hostname: endpoint.name,
-        model: endpoint.model,
-        manufacturer: endpoint.manufacturer,
-        namespace: endpoint.namespace,
-        serial: endpoint.serialNumber,
-        ipAddress: endpoint.ipAddresses ?? [endpoint.ipAddress],
-        domainName: endpoint.domainName,
-        macAddress,
-        computerId: endpoint.computerID,
-        systemUuid: endpoint.systemUUID,
-        osName,
-        systemLanguage: endpoint.os.language,
-        platform: endpoint.os.platform.toLowerCase(),
-        osVersion,
-        riskScore: endpoint.risk?.totalScore,
-        riskLevel: endpoint.risk?.riskLevel,
-        criticalityScore: endpoint.risk?.criticalityScore,
-        assetCriticality: endpoint.risk?.assetCriticality,
+export function createEndpointEntity(endpoint: AssetProductEndpoint) {
+  if (endpoint.id) {
+    return createIntegrationEntity({
+      entityData: {
+        source: endpoint,
+        assign: {
+          _key: createEndpointEntityKey(endpoint.id),
+          _class: Entities.ENDPOINT._class,
+          _type: Entities.ENDPOINT._type,
+          id: endpoint.id.toString(),
+          name: endpoint.computerName,
+          displayName: endpoint.computerName || endpoint.id.toString(),
+          hostname: endpoint.computerName,
+          manufacturer: endpoint.manufacturer,
+          serial: endpoint.serialNumber,
+          ipAddress: endpoint.ipAddress,
+          computerId: endpoint.computerId,
+          // Our currently allowed platform options doesn't include "Mac" as reported by Tanium
+          platform:
+            endpoint.osPlatform == 'Mac'
+              ? 'darwin'
+              : endpoint.osPlatform?.toLowerCase(),
+          osVersion: endpoint.operatingSystem,
+        },
       },
-    },
-  });
+    });
+  }
 }
 
 export function parseOsDetails(name: string) {

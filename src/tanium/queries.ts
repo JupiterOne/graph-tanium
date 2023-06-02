@@ -22,75 +22,43 @@
   sentinel: EndpointSentinel!
     */
 
+/* endpoints(after: Cursor, first: Int = 20, before: Cursor, last: Int, filter: EndpointFieldFilter, source: EndpointSource, refresh: Cursor): EndpointConnection*/
 export enum Queries {
-  ENDPOINT_QUERY = `query endpoints(
+  ENDPOINT_QUERY = `query assetProductEndpoints(
       $after: Cursor,
       $first: Int,
-      $before: Cursor,
-      $last: Int,
-      $filter: EndpointFieldFilter,
-      $source: EndpointSource,
-      $refresh: Cursor
+      $filter: AssetProductEndpointsFilter,
     ) {
-      endpoints(
+      assetProductEndpoints(
         after: $after,
         first: $first,
-        before: $before,
-        last: $last,
         filter: $filter,
-        source: $source,
-        refresh: $refresh
       ) {
         edges {
           node {
+            computerId
+            computerName
+            createdAt
+            eid
             id
-            eidFirstSeen
-            eidLastSeen
-            namespace
-            computerID
-            systemUUID
-            name
-            domainName
-            serialNumber
-            manufacturer
-            model
             ipAddress
-            ipAddresses
-            macAddresses
-            os {
-             name
-             platform
-             generation
-             language
-             windows {
-               type
-               majorVersion
-               releaseId
-             }
-            }
-            risk {
-              totalScore
-              riskLevel
-              assetCriticality
-              criticalityScore
-            }
-
+            manufacturer
+            operatingSystem
+            osPlatform
+            serialNumber
+            servicePack
+            updatedAt
+            userName
           }
+          cursor
         }
         pageInfo {
+          startCursor
           hasNextPage
+          hasPreviousPage
           endCursor
         }
-        totalRecords
-        collectionInfo {
-          active
-          success
-          expectedTotal
-          respondedTotal
-          contributedTotal
-          respondedPercentage
-          startCursor
-        }
-     }
+        totalCount
+      }
     }`,
 }
