@@ -7,6 +7,8 @@ import {
 import { GaxiosError, GaxiosOptions, request } from 'gaxios';
 import { IntegrationConfig } from '../config';
 import {
+  AssetProduct,
+  AssetProductConnection,
   AssetProductEndpoint,
   AssetProductEndpointConnection,
 } from './gql-types';
@@ -59,6 +61,35 @@ export class APIClient {
         response.data?.data?.assetProductEndpoints.pageInfo.hasNextPage;
       for (const edge of response.data?.data?.assetProductEndpoints?.edges ||
         []) {
+        if (edge) {
+          await iteratee(edge.node);
+        }
+      }
+    } while (hasNextPage);
+  }
+
+  public async iterateApplications(
+    iteratee: ResourceIteratee<AssetProduct>,
+  ): Promise<void> {
+    let hasNextPage = false;
+    let cursor = undefined;
+    do {
+      const response = await this.makeRequest<{
+        data: { assetProducts: AssetProductConnection };
+      }>({
+        url: '/plugin/products/gateway/graphql',
+        method: 'POST',
+        data: {
+          query: Queries.APPLICATION_QUERY,
+          variables: {
+            after: cursor,
+          },
+        },
+      });
+
+      cursor = response.data?.data?.assetProducts.pageInfo.endCursor;
+      hasNextPage = response.data?.data?.assetProducts.pageInfo.hasNextPage;
+      for (const edge of response.data?.data?.assetProducts?.edges || []) {
         if (edge) {
           await iteratee(edge.node);
         }

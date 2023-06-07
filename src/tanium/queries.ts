@@ -61,4 +61,55 @@ export enum Queries {
         totalCount
       }
     }`,
+  APPLICATION_QUERY = `query assetProducts(
+      $after: Cursor,
+      $first: Int,
+      $filter: AssetProductsFilter,
+    ) {
+      assetProducts(
+        after: $after,
+        first: $first,
+        filter: $filter,
+      ) {
+        edges {
+          node {
+            vendor
+            name
+            installation {
+              installedCount
+              usedCount
+              unusedCount
+              pendingUsage
+            }
+            tracking {
+              state
+              reportingPeriodDays
+              normalMinutesUsedPerDay
+              highMinutesUsedPerDay
+              baselinePeriodDays
+            }
+            usage {
+              usageNotDetected
+              notInstalled
+              baselining
+              limited
+              normal
+              high
+            }
+            versions {
+              version
+              installs
+            }
+          }
+          cursor
+        }
+        pageInfo {
+          startCursor
+          hasNextPage
+          hasPreviousPage
+          endCursor
+        }
+        totalCount
+      }
+    }`,
 }
