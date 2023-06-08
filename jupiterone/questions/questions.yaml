@@ -68,7 +68,7 @@ questions:
       - name: Summarize Tanium Endpoints' OS and Versions
         results_are: INFORMATIVE
         query: |
-          find tanium_endpoint as te return CONCAT(te.osName,\" \", te.osVersion) as \"OS\", count(te) as \"# of Assets\"
+          find tanium_endpoint as te return te.osVersion as "OS", count(te) as "# of Assets"
     tags:
       - endpoint management
       - devices
