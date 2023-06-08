@@ -1,3 +1,15 @@
+# v0.4.0 (Thu Jun 08 2023)
+
+#### 🚀 Enhancement
+
+- INT-8491 - Adding application inventory step [#14](https://github.com/JupiterOne/graph-tanium/pull/14) ([@adam-in-ict](https://github.com/adam-in-ict))
+
+#### Authors: 1
+
+- Adam Pierson ([@adam-in-ict](https://github.com/adam-in-ict))
+
+---
+
 # v0.3.0 (Fri Jun 02 2023)
 
 #### 🚀 Enhancement
