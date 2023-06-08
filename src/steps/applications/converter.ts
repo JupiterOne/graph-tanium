@@ -9,8 +9,11 @@ export function createApplicationEntityKey(name: string) {
   return `${Entities.APPLICATION._type}:${name}`;
 }
 
-export function createApplicationVersionEntityKey(name: string) {
-  return `${Entities.VERSION._type}:${name}`;
+export function createApplicationVersionEntityKey(
+  name: string,
+  version: string,
+) {
+  return `${Entities.VERSION._type}:${name}:${version}`;
 }
 
 export function createApplicationEntity(application: AssetProduct) {
@@ -53,7 +56,10 @@ export function createVersionEntities(application: AssetProduct) {
           entityData: {
             source: application,
             assign: {
-              _key: createApplicationVersionEntityKey(application.name),
+              _key: createApplicationVersionEntityKey(
+                application.name,
+                version.version,
+              ),
               _class: Entities.VERSION._class,
               _type: Entities.VERSION._type,
               name: application.name,
