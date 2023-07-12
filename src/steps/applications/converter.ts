@@ -5,15 +5,20 @@ import {
 import { AssetProduct } from '../../tanium/gql-types';
 import { Entities } from '../constants';
 
-export function createApplicationEntityKey(name: string) {
-  return `${Entities.APPLICATION._type}:${name}`;
+function formatKey(str: string) {
+  return str.toLowerCase().split(' ').join('-');
+}
+
+export function createApplicationEntityKey({ name, vendor }: AssetProduct) {
+  return formatKey(`${Entities.APPLICATION._type}:${vendor}:${name}`);
 }
 
 export function createApplicationVersionEntityKey(
+  vendor: string,
   name: string,
   version: string,
 ) {
-  return `${Entities.VERSION._type}:${name}:${version}`;
+  return formatKey(`${Entities.VERSION._type}:${vendor}:${name}:${version}`);
 }
 
 export function createApplicationEntity(application: AssetProduct) {
@@ -21,7 +26,7 @@ export function createApplicationEntity(application: AssetProduct) {
     entityData: {
       source: application,
       assign: {
-        _key: createApplicationEntityKey(application.name),
+        _key: createApplicationEntityKey(application),
         _class: Entities.APPLICATION._class,
         _type: Entities.APPLICATION._type,
         name: application.name,
@@ -57,6 +62,7 @@ export function createVersionEntities(application: AssetProduct) {
             source: application,
             assign: {
               _key: createApplicationVersionEntityKey(
+                application.vendor,
                 application.name,
                 version.version,
               ),

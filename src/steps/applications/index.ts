@@ -9,8 +9,13 @@ import {
 import { IntegrationConfig } from '../../config';
 import { Entities, Relationships, Steps } from '../constants';
 import { createAPIClient } from '../../tanium/client';
-import { createApplicationEntity, createVersionEntities } from './converter';
+import {
+  createApplicationEntity,
+  createApplicationEntityKey,
+  createVersionEntities,
+} from './converter';
 import { ACCOUNT_ENTITY_KEY } from '../account';
+import getDifferentKeys from '../../utils/getDifferentKeys';
 
 export const applicationSteps: IntegrationStep<IntegrationConfig>[] = [
   {
@@ -30,6 +35,7 @@ export const applicationSteps: IntegrationStep<IntegrationConfig>[] = [
 async function fetchApplications({
   instance,
   jobState,
+  logger,
 }: IntegrationStepExecutionContext<IntegrationConfig>) {
   const accountEntity = await jobState.getData<Entity>(ACCOUNT_ENTITY_KEY);
   if (!accountEntity) {
@@ -40,7 +46,17 @@ async function fetchApplications({
 
   const client = createAPIClient(instance.config);
   await client.iterateApplications(async (application) => {
+    const applicationKey = createApplicationEntityKey(application);
     const applicationEntity = createApplicationEntity(application);
+    const existentApplicationEntity = await jobState.findEntity(applicationKey);
+    if (existentApplicationEntity) {
+      logger.warn(
+        `Detailed duplicate entity report: ${JSON.stringify(
+          getDifferentKeys(existentApplicationEntity, applicationEntity),
+        )}`,
+      );
+      return;
+    }
     await jobState.addEntity(applicationEntity);
     await jobState.addRelationship(
       createDirectRelationship({
