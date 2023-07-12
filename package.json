@@ -43,6 +43,7 @@
     "@jupiterone/integration-sdk-core": "^8.31.1",
     "@jupiterone/integration-sdk-dev-tools": "^8.31.1",
     "@jupiterone/integration-sdk-testing": "^8.31.1",
+    "@types/lodash": "^4.14.195",
     "auto": "^10.36.5",
     "graphql": "^16.6.0"
   },
@@ -63,6 +64,7 @@
     }
   },
   "dependencies": {
-    "gaxios": "^5.1.0"
+    "gaxios": "^5.1.0",
+    "lodash": "^4.17.21"
   }
 }

@@ -17,6 +17,8 @@ import { TaniumUser } from './rest-types';
 
 export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
 
+const MAX_LIMIT = 100;
+
 /**
  * An APIClient maintains authentication state and provides an interface to
  * third party data APIs.
@@ -52,15 +54,15 @@ export class APIClient {
           query: Queries.ENDPOINT_QUERY,
           variables: {
             after: cursor,
+            first: MAX_LIMIT,
           },
         },
       });
 
-      cursor = response.data?.data?.assetProductEndpoints.pageInfo.endCursor;
-      hasNextPage =
-        response.data?.data?.assetProductEndpoints.pageInfo.hasNextPage;
-      for (const edge of response.data?.data?.assetProductEndpoints?.edges ||
-        []) {
+      const endpointsData = response.data?.data?.assetProductEndpoints;
+      cursor = endpointsData.pageInfo?.endCursor;
+      hasNextPage = endpointsData.pageInfo?.hasNextPage;
+      for (const edge of endpointsData?.edges || []) {
         if (edge) {
           await iteratee(edge.node);
         }
@@ -83,13 +85,15 @@ export class APIClient {
           query: Queries.APPLICATION_QUERY,
           variables: {
             after: cursor,
+            first: MAX_LIMIT,
           },
         },
       });
 
-      cursor = response.data?.data?.assetProducts.pageInfo.endCursor;
-      hasNextPage = response.data?.data?.assetProducts.pageInfo.hasNextPage;
-      for (const edge of response.data?.data?.assetProducts?.edges || []) {
+      const assetProductsData = response.data?.data?.assetProducts;
+      cursor = assetProductsData.pageInfo?.endCursor;
+      hasNextPage = assetProductsData.pageInfo?.hasNextPage;
+      for (const edge of assetProductsData?.edges || []) {
         if (edge) {
           await iteratee(edge.node);
         }
@@ -127,6 +131,7 @@ export class APIClient {
           'Content-Type': 'application/json',
           session: this.config.token,
         },
+        retry: true,
         ...opts,
       });
     } catch (err) {
@@ -137,18 +142,21 @@ export class APIClient {
 
         if (err.response?.status === 401) {
           throw new IntegrationProviderAuthenticationError({
+            cause: err,
             status,
             statusText,
             endpoint,
           });
         } else if (err.response?.status == 403) {
           throw new IntegrationProviderAuthorizationError({
+            cause: err,
             status,
             statusText,
             endpoint,
           });
         } else {
           throw new IntegrationProviderAPIError({
+            cause: err,
             status,
             statusText,
             endpoint,
