@@ -1,3 +1,15 @@
+# v0.4.2 (Thu Jul 13 2023)
+
+#### 🐛 Bug Fix
+
+- INT-8675 - Add error handling from response data [#16](https://github.com/JupiterOne/graph-tanium/pull/16) (ronald.arias@contractor.jupiterone.com)
+
+#### Authors: 1
+
+- Ronald Arias ([@RonaldEAM](https://github.com/RonaldEAM))
+
+---
+
 # v0.4.1 (Wed Jul 12 2023)
 
 #### 🐛 Bug Fix
