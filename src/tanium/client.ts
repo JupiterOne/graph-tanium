@@ -60,8 +60,8 @@ export class APIClient {
       });
 
       const endpointsData = response.data?.data?.assetProductEndpoints;
-      cursor = endpointsData.pageInfo?.endCursor;
-      hasNextPage = endpointsData.pageInfo?.hasNextPage;
+      cursor = endpointsData?.pageInfo?.endCursor;
+      hasNextPage = endpointsData?.pageInfo?.hasNextPage;
       for (const edge of endpointsData?.edges || []) {
         if (edge) {
           await iteratee(edge.node);
@@ -91,8 +91,8 @@ export class APIClient {
       });
 
       const assetProductsData = response.data?.data?.assetProducts;
-      cursor = assetProductsData.pageInfo?.endCursor;
-      hasNextPage = assetProductsData.pageInfo?.hasNextPage;
+      cursor = assetProductsData?.pageInfo?.endCursor;
+      hasNextPage = assetProductsData?.pageInfo?.hasNextPage;
       for (const edge of assetProductsData?.edges || []) {
         if (edge) {
           await iteratee(edge.node);
@@ -125,7 +125,7 @@ export class APIClient {
     opts: Pick<GaxiosOptions, 'url' | 'method' | 'data' | 'headers' | 'params'>,
   ) {
     try {
-      return await request<T>({
+      const response = await request<T>({
         baseUrl: this.config.baseUrl,
         headers: {
           'Content-Type': 'application/json',
@@ -134,6 +134,13 @@ export class APIClient {
         retry: true,
         ...opts,
       });
+      if ((response.data as any)?.errors) {
+        const collectErrors = (response.data as any).errors.map((error) =>
+          JSON.stringify(error),
+        );
+        throw new Error(`API Gateway Errors: ${collectErrors.join(' | ')}`);
+      }
+      return response;
     } catch (err) {
       if (err instanceof GaxiosError) {
         const status = err.response?.status ?? 404;
