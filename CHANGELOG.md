@@ -1,3 +1,15 @@
+# v0.4.1 (Wed Jul 12 2023)
+
+#### 🐛 Bug Fix
+
+- INT-8675 - add duplicate applications handling; add original error to report [#15](https://github.com/JupiterOne/graph-tanium/pull/15) (ronald.arias@contractor.jupiterone.com)
+
+#### Authors: 1
+
+- Ronald Arias ([@RonaldEAM](https://github.com/RonaldEAM))
+
+---
+
 # v0.4.0 (Thu Jun 08 2023)
 
 #### 🚀 Enhancement

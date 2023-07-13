@@ -125,7 +125,9 @@ export class APIClient {
     opts: Pick<GaxiosOptions, 'url' | 'method' | 'data' | 'headers' | 'params'>,
   ) {
     try {
-      const response = await request<T>({
+      const response = await request<
+        T & { errors: Array<Record<string, unknown>> }
+      >({
         baseUrl: this.config.baseUrl,
         headers: {
           'Content-Type': 'application/json',
@@ -134,8 +136,8 @@ export class APIClient {
         retry: true,
         ...opts,
       });
-      if ((response.data as any)?.errors) {
-        const collectErrors = (response.data as any).errors.map((error) =>
+      if (response.data.errors) {
+        const collectErrors = response.data.errors.map((error) =>
           JSON.stringify(error),
         );
         throw new Error(`API Gateway Errors: ${collectErrors.join(' | ')}`);
