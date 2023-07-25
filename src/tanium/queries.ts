@@ -39,7 +39,6 @@ export enum Queries {
             computerId
             computerName
             createdAt
-            eid
             id
             ipAddress
             manufacturer
