@@ -1,3 +1,15 @@
+# v0.4.3 (Tue Jul 25 2023)
+
+#### 🐛 Bug Fix
+
+- INT-8744 - remove "eid" field from endpoints gql query [#17](https://github.com/JupiterOne/graph-tanium/pull/17) (ronald.arias@contractor.jupiterone.com)
+
+#### Authors: 1
+
+- Ronald Arias ([@RonaldEAM](https://github.com/RonaldEAM))
+
+---
+
 # v0.4.2 (Thu Jul 13 2023)
 
 #### 🐛 Bug Fix
