@@ -11,6 +11,8 @@ import {
   AssetProductConnection,
   AssetProductEndpoint,
   AssetProductEndpointConnection,
+  EndpointConnection,
+  EndpointInstalledApplication,
 } from './gql-types';
 import { Queries } from './queries';
 import { TaniumUser } from './rest-types';
@@ -51,7 +53,7 @@ export class APIClient {
         url: '/plugin/products/gateway/graphql',
         method: 'POST',
         data: {
-          query: Queries.ENDPOINT_QUERY,
+          query: Queries.ASSET_PRODUCT_ENDPOINTS_QUERY,
           variables: {
             after: cursor,
             first: MAX_LIMIT,
@@ -99,6 +101,30 @@ export class APIClient {
         }
       }
     } while (hasNextPage);
+  }
+
+  public async iterateInstalledApplications(
+    computerId: string,
+    iteratee: ResourceIteratee<EndpointInstalledApplication>,
+  ): Promise<void> {
+    const response = await this.makeRequest<{
+      data: { endpoints: EndpointConnection };
+    }>({
+      url: '/plugin/products/gateway/graphql',
+      method: 'POST',
+      data: {
+        query: Queries.INSTALLED_APPLICATIONS_QUERY,
+        variables: {
+          filter: { path: 'computerID', value: computerId },
+        },
+      },
+    });
+
+    const installedApplications =
+      response.data?.data?.endpoints.edges[0]?.node.installedApplications;
+    for (const installedApplication of installedApplications || []) {
+      await iteratee(installedApplication);
+    }
   }
 
   public async verifyAuthentication(): Promise<void> {

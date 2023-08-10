@@ -24,7 +24,7 @@ export const applicationSteps: IntegrationStep<IntegrationConfig>[] = [
     entities: [Entities.APPLICATION, Entities.VERSION],
     relationships: [
       Relationships.ACCOUNT_HAS_APPLICATION,
-      Relationships.APPLICATION_HAS_VERISON,
+      Relationships.APPLICATION_HAS_VERSION,
     ],
     mappedRelationships: [],
     dependsOn: [Steps.ACCOUNT],

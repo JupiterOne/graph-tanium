@@ -1,7 +1,307 @@
+type Action {
+  id: ID!
+  name: String!
+  comment: String!
+  expireSeconds: Int
+  creationTime: Time
+  startTime: Time
+  expirationTime: Time
+  distributeSeconds: Int
+  status: ActionStatus
+  stoppedFlag: Boolean
+  targets: ActionTargets!
+  package: PackageRef!
+  scheduledAction: ScheduledAction
+  stopped: Boolean!
+  creator: Principal!
+  approver: Principal
+  metadata: [Metadata!]!
+  results: ActionResults!
+}
+
+input ActionActionGroupInput {
+  id: ID
+  name: String
+}
+
+input ActionChangeClientSetting {
+  name: SettingName!
+  value: Any!
+}
+
+input ActionCollectAD {
+  minimumMinutesBetweenRuns: Int
+}
+
+input ActionCreateInput {
+  targets: ActionTargetsInput!
+  package: PackageRefInput!
+  schedule: ActionScheduleInput
+  name: String
+  comment: String
+}
+
+type ActionCreatePayload {
+  action: Action
+  error: SystemError
+}
+
+type ActionGroup {
+  id: ID!
+  name: String!
+  visibility: ActionGroupVisibility!
+  userGroups: [NamedRef!]
+  computerGroups: [ComputerGroup!]!
+  any: Boolean!
+}
+
+type ActionGroupConnection implements Connection {
+  edges: [ActionGroupEdge!]!
+  pageInfo: PageInfo!
+  totalRecords: Int!
+}
+
+input ActionGroupCreateInput {
+  name: String!
+  visibility: ActionGroupVisibility!
+  userGroups: [NamedRefInput!]
+  computerGroups: [NamedRefInput!]!
+  any: Boolean! = false
+}
+
+type ActionGroupCreatePayload {
+  group: ActionGroup
+  error: SystemError
+}
+
+type ActionGroupDeletePayload {
+  id: ID
+  error: SystemError
+}
+
+type ActionGroupEdge implements Edge {
+  node: ActionGroup!
+  cursor: Cursor!
+}
+
+enum ActionGroupVisibility {
+  ADMIN
+  ALL
+  USER_GROUPS
+}
+
+type ActionInfo {
+  id: ID!
+}
+
+input ActionInput {
+  name: String
+  description: String
+  target: ActionTarget
+  schedule: ActionSchedule
+  replaceExisting: Boolean
+  changeClientSetting: ActionChangeClientSetting
+  startService: ActionService
+  stopService: ActionService
+  restartService: ActionService
+  reboot: ActionReboot
+  collectActiveDirectoryInfo: ActionCollectAD
+  _dev_action: DevAction
+}
+
+input ActionOperationChangeClientSettingInput {
+  name: ActionOperationChangeClientSettingName!
+  value: String!
+}
+
+enum ActionOperationChangeClientSettingName {
+  LogVerbosityLevel
+  RandomSensorDelayInSeconds
+  StateProtectedFlag
+  HotCachePercentage
+}
+
+input ActionOperationCollectActiveDirectoryInfoInput {
+  minimumMinutesBetweenRuns: Int
+}
+
+input ActionOperationInput {
+  addTags: [String!]
+  removeTags: [String!]
+  changeClientSetting: ActionOperationChangeClientSettingInput
+  startService: String
+  stopService: String
+  restartService: String
+  reboot: ActionOperationRebootInput
+  collectActiveDirectoryInfo: ActionOperationCollectActiveDirectoryInfoInput
+}
+
+input ActionOperationRebootInput {
+  randomDelaySeconds: Int
+}
+
+input ActionPerformInput {
+  targets: ActionTargetsInput!
+  package: PackageRefInput
+  operation: ActionOperationInput
+  schedule: ActionPerformScheduleInput
+  name: String
+  comment: String
+}
+
+type ActionPerformPayload {
+  scheduledActions: [ActionPerformPlatform!]
+  error: SystemError
+}
+
+type ActionPerformPlatform {
+  platforms: [EndpointPlatform!]
+  scheduledAction: ScheduledAction!
+}
+
+input ActionPerformScheduleInput {
+  distributeSeconds: Int = 0
+  expireSeconds: Int
+  reissueSeconds: Int
+  startTime: Time
+  endTime: Time
+}
+
+input ActionReboot {
+  randomDelaySeconds: Int
+}
+
+type ActionResults {
+  id: ID!
+  waiting: Int!
+  downloading: Int!
+  running: Int!
+  waitingToRetry: Int!
+  completed: Int!
+  expired: Int!
+  failed: Int!
+  pendingVerification: Int!
+  verified: Int!
+  failedVerification: Int!
+}
+
+input ActionSchedule {
+  start: Time
+  end: Time
+  distributeOverSeconds: Int
+  reissueSeconds: Int
+}
+
+input ActionScheduleInput {
+  distributeSeconds: Int = 0
+  expireSeconds: Int
+  startTime: Time
+}
+
+input ActionService {
+  name: String!
+}
+
+enum ActionStatus {
+  OPEN
+  PENDING
+  ACTIVE
+  STOPPED
+  EXPIRED
+  CLOSED
+}
+
+type ActionStopPayload {
+  id: ID
+  error: SystemError
+}
+
+input ActionTarget {
+  actionGroup: String
+  targetGroup: String
+  platforms: [EndpointPlatform!]
+  endpoints: [ID]
+}
+
+input ActionTargetGroupInput {
+  id: ID
+  name: String
+  filter: ComputerGroupFilter
+}
+
+type ActionTargets {
+  actionGroup: NamedRef!
+  targetGroup: NamedRef!
+}
+
+input ActionTargetsInput {
+  actionGroup: ActionActionGroupInput
+  targetGroup: ActionTargetGroupInput
+  platforms: [EndpointPlatform!]
+  endpoints: [ID!]
+}
+
+scalar Any
+
+type APIToken {
+  id: ID!
+  tokenString: String
+  trustedIPAddresses: [String!]!
+  notes: String!
+  persona: Persona
+  expiration: Time!
+  lastUsed: Time!
+  created: Time!
+}
+
+input APITokenGrantInput {
+  trustedIPAddresses: [String!]!
+  expiresInDays: Int
+  personaName: String
+  notes: String
+}
+
+type APITokenGrantPayload {
+  token: APIToken
+  error: SystemError
+}
+
+type APITokenQueryPayload {
+  tokens: [APIToken!]
+  error: SystemError
+}
+
+input APITokenRevokeInput {
+  id: ID!
+}
+
+type APITokenRevokePayload {
+  error: SystemError
+}
+
+input APITokenRotateInput {
+  tokenString: String!
+}
+
+type APITokenRotatePayload {
+  token: APIToken
+  error: SystemError
+}
+
+interface Asset {
+  id: ID!
+  name: String!
+  serialNumber: String!
+  manufacturer: String!
+  model: String!
+  configurationItem: ConfigurationItem
+}
+
 type AssetImportPayload {
   id: Int
   index: Int!
   status: AssetImportStatus!
+  error: String
 }
 
 enum AssetImportStatus {
@@ -11,6 +311,12 @@ enum AssetImportStatus {
   ErrorInvalidState
   ErrorMissingKey
   ErrorDuplicateItemInProcess
+  ErrorImportFailed
+}
+
+type AssetPagination {
+  items: [Asset]!
+  pageInfo: PaginationInfo!
 }
 
 type AssetProduct {
@@ -151,6 +457,134 @@ type AssetsImportPayload {
   assets: [AssetImportPayload!]
 }
 
+interface CIEntity {
+  id: ID!
+  name: String!
+  category: EntityCategory!
+  comments: String
+  created: Time!
+  updated: Time!
+  private: Boolean!
+  details: Map
+}
+
+type Class implements CIEntity {
+  id: ID!
+  name: String!
+  category: EntityCategory!
+  comments: String
+  created: Time!
+  updated: Time!
+  private: Boolean!
+  details(schemaVersion: String): Map
+}
+
+input CloseDirectConnectionInput {
+  connectionID: ID!
+}
+
+type CloseDirectConnectionPayload {
+  result: Boolean!
+}
+
+type ComputerGroup {
+  id: ID!
+  name: String!
+  managementRightsEnabled: Boolean!
+  filterEnabled: Boolean!
+  contentSet: NamedRef
+  type: ComputerGroupType!
+  expression: String!
+}
+
+type ComputerGroupConnection implements Connection {
+  edges: [ComputerGroupEdge!]!
+  pageInfo: PageInfo!
+  totalRecords: Int!
+}
+
+input ComputerGroupCreateInput {
+  name: String!
+  managementRightsEnabled: Boolean!
+  contentSetRef: NamedRefInput
+  filter: ComputerGroupFilter!
+}
+
+type ComputerGroupCreatePayload {
+  group: ComputerGroup
+  error: SystemError
+}
+
+type ComputerGroupDeletePayload {
+  id: ID
+  error: SystemError
+}
+
+type ComputerGroupEdge implements Edge {
+  node: ComputerGroup!
+  cursor: Cursor!
+}
+
+input ComputerGroupFilter {
+  memberOf: EndpointFieldFilterComputerGroup
+  sensor: EndpointFieldFilterSensor
+  op: FieldFilterOp! = EQ
+  negated: Boolean! = false
+  value: String
+  filters: [ComputerGroupFilter!]
+  any: Boolean! = false
+}
+
+input ComputerGroupsFilter {
+  type: ComputerGroupType
+  managementRightsEnabled: Boolean
+  filterEnabled: Boolean
+}
+
+enum ComputerGroupType {
+  STANDARD
+  MANUAL
+}
+
+type ConfigurationItem {
+  entityID: ID!
+  entityClassIDs: [ID!]!
+  namespace: String!
+}
+
+type ConfigurationItemEntityConnection implements Connection {
+  edges: [ConfigurationItemEntityEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type ConfigurationItemEntityEdge implements Edge {
+  cursor: Cursor!
+  node: CIEntity!
+}
+
+type ConfigurationItemProperties {
+  customerItemsLimit: Int
+  userSpecifiedAssetsMaxAge: Int
+}
+
+type ConfigurationItemRelationshipConnection implements Connection {
+  edges: [ConfigurationItemRelationshipEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type ConfigurationItemRelationshipEdge implements Edge {
+  cursor: Cursor!
+  node: Relationship!
+}
+
+enum ConnectedState {
+  CONNECTED
+  DISCONNECTED
+  UNKNOWN
+}
+
 interface Connection {
   edges: [Edge]!
   pageInfo: PageInfo!
@@ -160,8 +594,615 @@ scalar Cursor
 
 scalar Date
 
+scalar DateTimeComponent
+
+type DefaultRangeEnd {
+  model: ParameterDefinitionType!
+  parameterType: ParameterDefinitionType!
+  type: DateTimeComponent
+  interval: Int
+  intervalCount: Int
+  unixTimeStamp: Int
+}
+
+input DeleteActionInput {
+  name: String!
+}
+
+input DeleteConfigurationItemElementInput {
+  id: ID!
+}
+
+type DeleteConfigurationItemElementResult {
+  error: String
+}
+
+input DeleteRelationshipInput {
+  ids: [ID!]!
+}
+
+input DevAction {
+  packageName: String!
+  parameters: Map
+}
+
+type DirectConnect {
+  performance: DirectConnectPerf
+  processes: DirectConnectProcesses
+  alerts: DirectConnectAlerts
+}
+
+type DirectConnectAlerts {
+  all(scope: DirectConnectAlertScope): [EndpointAlert!]
+}
+
+input DirectConnectAlertScope {
+  startTime: Time!
+  endTime: Time
+}
+
+input DirectConnectCloseInput {
+  connectionID: ID!
+}
+
+type DirectConnectClosePayload {
+  result: Boolean!
+}
+
+enum DirectConnectConnectionStatus {
+  UNKNOWN
+  READY
+  CONNECTING
+  ERROR
+  NOT_FOUND
+}
+
+input DirectConnectConnectionStatusInput {
+  connectionID: ID!
+}
+
+type DirectConnectConnectionStatusPayload {
+  status: DirectConnectConnectionStatus!
+}
+
+input DirectConnectEndpointInput {
+  connectionID: ID!
+}
+
+input DirectConnectOpenInput {
+  endpointID: ID!
+}
+
+type DirectConnectOpenPayload {
+  connectionID: ID!
+  status: DirectConnectConnectionStatus!
+}
+
+type DirectConnectPerf {
+  cpuUsagePercent: Float!
+  memoryUsedPercent: Float!
+  _dev_query(query: PerfQuery!): [EndpointMetric!]
+}
+
+input DirectConnectPingInput {
+  connectionID: ID!
+}
+
+type DirectConnectPingPayload {
+  result: Boolean!
+}
+
+type DirectConnectProcesses {
+  all: [Process!]
+}
+
+input DirectConnectProcessTerminateInput {
+  connectionID: ID!
+  pid: Int!
+  name: String!
+  signal: Signal!
+}
+
+type DirectConnectProcessTerminatePayload {
+  result: Boolean!
+}
+
+type DiskSpace {
+  free: String!
+  total: String!
+  usedPercentage: String!
+  usedSpace: String!
+}
+
 interface Edge {
   cursor: Cursor!
+}
+
+enum EdgeDirection {
+  AtoB
+  BtoA
+  Bidirectional
+}
+
+type Element implements CIEntity {
+  id: ID!
+  name: String!
+  namespace: String!
+  eid: ID
+  category: EntityCategory!
+  comments: String
+  created: Time!
+  updated: Time!
+  private: Boolean!
+  details(schemaVersion: String): Map
+  entityClassIDs: [ID!]!
+  classes(page: Int = 1, perPage: Int = 20): EntityPagination
+}
+
+type Endpoint implements Asset {
+  id: ID!
+  eidFirstSeen: Time
+  eidLastSeen: Time
+  namespace: String!
+  computerID: String!
+  systemUUID: String!
+  name: String!
+  domainName: String!
+  serialNumber: String!
+  manufacturer: String!
+  model: String!
+  configurationItem: ConfigurationItem
+  ipAddress: String!
+  ipAddresses: [String!]
+  macAddresses: [String!]
+  primaryUser: EndpointUser!
+  lastLoggedInUser: String!
+  isVirtual: Boolean
+  isEncrypted: Boolean
+  chassisType: String!
+  os: EndpointOS!
+  disks: [EndpointDisk!]
+  memory: Memory!
+  processor: Processor!
+  networking: Networking!
+  eventCounts: EndpointEventCounts!
+  services: [EndpointService!]!
+  installedApplications(filter: FieldFilter): [EndpointInstalledApplication!]!
+  deployedSoftwarePackages(
+    filter: FieldFilter
+  ): [EndpointDeploySoftwarePackage!]!
+  sensorReadings(
+    sensors: [EndpointSensorRef!]!
+    includeHiddenColumns: Boolean! = false
+  ): EndpointSensorReadings!
+  compliance: EndpointCompliance
+  discover: EndpointDiscover
+  risk: EndpointRisk
+  sentinel: EndpointSentinel!
+}
+
+type EndpointAlert {
+  schema: Int!
+  key: String
+  type: String
+  ref: String
+  topProcessesExpr: String
+  labels: Map
+  pendingAt: Time
+  start: Time
+  resolvedAt: Time
+  leadup: Int
+  value: Float
+  firing: Boolean
+  evidenceToGather: [String!]
+  evidence: [EndpointAlertEvidence!]
+}
+
+type EndpointAlertEvidence {
+  name: String
+  value: String
+  values: [EndpointAlertEvidenceValues]
+}
+
+type EndpointAlertEvidenceValues {
+  value: Float
+  labels: Map
+}
+
+type EndpointCollectionInfo {
+  active: Boolean!
+  success: Boolean!
+  expectedTotal: Int
+  respondedTotal: Int
+  contributedTotal: Int!
+  respondedPercentage: Float
+  startCursor: Cursor
+}
+
+type EndpointCompliance {
+  cveFindings(filter: FieldFilter): [EndpointComplianceCveFinding!]
+  complianceFindings(
+    filter: FieldFilter
+  ): [EndpointComplianceComplianceFinding!]
+}
+
+type EndpointComplianceComplianceFinding {
+  id: String
+  state: String
+  category: String
+  ruleId: String
+  standard: String
+  standardVersion: String
+  profile: String
+  profileVersion: String
+  rule: String
+  firstFoundDate: Date
+  lastScanDate: Date
+}
+
+type EndpointComplianceCveFinding {
+  cveId: String
+  cvssScore: Float
+  severity: String
+  cvssScoreV3: Float
+  severityV3: String
+  cveYear: String
+  summary: String
+  firstFound: Date
+  lastFound: Date
+  absoluteFirstFoundDate: Date
+  lastScanDate: Date
+}
+
+type EndpointConnection implements Connection {
+  edges: [EndpointEdge!]!
+  pageInfo: PageInfo!
+  totalRecords: Int!
+  collectionInfo: EndpointCollectionInfo!
+}
+
+type EndpointDeploySoftwarePackage {
+  id: ID!
+  vendor: String!
+  name: String!
+  version: String!
+  gallery: String!
+  applicability: String!
+}
+
+type EndpointDiscover {
+  discoverMethod: String
+  discoverProfile: String
+  natIpAddress: String
+  openPorts: [Int!]
+}
+
+type EndpointDisk {
+  name: String!
+  free: String
+  total: String
+  usedPercentage: String
+  usedSpace: String
+}
+
+type EndpointEdge implements Edge {
+  node: Endpoint!
+  cursor: Cursor!
+}
+
+type EndpointEventCounts {
+  cpu: Int!
+  memory: Int!
+  disk: Int!
+  network: Int!
+  appCrash: Int!
+  all: Int!
+}
+
+input EndpointFieldFilter {
+  path: String
+  memberOf: EndpointFieldFilterComputerGroup
+  sensor: EndpointFieldFilterSensor
+  op: FieldFilterOp! = EQ
+  negated: Boolean! = false
+  value: String
+  filters: [EndpointFieldFilter!]
+  any: Boolean! = false
+}
+
+input EndpointFieldFilterComputerGroup {
+  name: String
+  id: ID
+}
+
+input EndpointFieldFilterSensor {
+  name: String
+  column: String
+  params: [EndpointFieldFilterSensorParam!]
+}
+
+input EndpointFieldFilterSensorParam {
+  name: String!
+  value: String!
+}
+
+type EndpointIdChange {
+  newId: ID!
+  oldId: ID!
+}
+
+type EndpointIdChangesPayload {
+  changes: [EndpointIdChange!]!
+  before: Time!
+}
+
+type EndpointInstalledApplication {
+  name: String!
+  version: String!
+  silentUninstallString: String!
+  uninstallable: Boolean
+}
+
+type EndpointMetric {
+  metric: EndpointMetricInfo
+  value: Any
+  values: Any
+}
+
+type EndpointMetricInfo {
+  name: String
+}
+
+type EndpointOS {
+  name: String!
+  platform: EndpointPlatform!
+  generation: String!
+  language: String!
+  windows: EndpointWindowsOS
+}
+
+enum EndpointPlatform {
+  Unknown
+  Windows
+  Linux
+  Mac
+  Solaris
+  AIX
+}
+
+type EndpointRisk {
+  totalScore: Float!
+  riskLevel: String!
+  assetCriticality: String!
+  criticalityScore: Float!
+  vectors: EndpointRiskVectors!
+}
+
+type EndpointRiskAdministrativeAccessVector {
+  score: Float!
+  impactRatingScore: Int!
+  impactRating: String!
+  direct: Int!
+  indirect: Int!
+  inbound: Int!
+  outbound: Int!
+  sessions: Int!
+}
+
+type EndpointRiskComplianceVector {
+  score: Float!
+  complianceFailCount: Int!
+}
+
+type EndpointRiskExpiredCertificatesVector {
+  score: Float!
+  ports: String!
+  certificatesCount: Int!
+}
+
+type EndpointRiskInsecureTLSVector {
+  score: Float!
+  ports: String!
+  protocols: String!
+}
+
+type EndpointRiskPasswordIdentificationVector {
+  score: Float!
+  filesConfirmed: String!
+}
+
+type EndpointRiskSystemVulnerabilityVector {
+  score: Float!
+  cveCount: Int!
+}
+
+type EndpointRiskVectors {
+  systemVulnerability: EndpointRiskSystemVulnerabilityVector
+  compliance: EndpointRiskComplianceVector
+  administrativeAccess: EndpointRiskAdministrativeAccessVector
+  passwordIdentification: EndpointRiskPasswordIdentificationVector
+  expiredCertificates: EndpointRiskExpiredCertificatesVector
+  insecureTLS: EndpointRiskInsecureTLSVector
+}
+
+type EndpointSensorReadingColumn {
+  sensor: EndpointSensorReadingRef!
+  name: String!
+  values: [String!]!
+}
+
+type EndpointSensorReadingRef {
+  name: String!
+  params: [EndpointSensorReadingRefParam!]
+}
+
+type EndpointSensorReadingRefParam {
+  name: String!
+  value: String!
+}
+
+type EndpointSensorReadings {
+  columns: [EndpointSensorReadingColumn!]!
+}
+
+input EndpointSensorRef {
+  name: String!
+  params: [EndpointSensorRefParam!]
+  maxAge: Int
+  columns: [String!]
+  filter: SensorValueFilter
+}
+
+input EndpointSensorRefParam {
+  name: String!
+  value: String!
+}
+
+type EndpointSentinel {
+  sccmClient: EndpointSentinelSCCMClient!
+  windowsDefender: EndpointSentinelWindowsDefender!
+}
+
+type EndpointSentinelSCCMClient {
+  health: String
+  reason: String
+}
+
+type EndpointSentinelWindowsDefender {
+  installed: String
+  clientVersion: String
+  healthy: String
+  processEnabled: String
+  processStartType: String
+  antivirusEnabled: String
+  antiSpywareEnabled: String
+  quickScanAge: String
+  antivirusSignatureUpdateAge: String
+}
+
+type EndpointService {
+  name: String!
+  displayName: String!
+  status: EndpointServiceStatus
+  startupMode: EndpointServiceStartupMode
+}
+
+enum EndpointServiceStartupMode {
+  MANUAL
+  AUTO
+  DISABLED
+  BOOT
+  SYSTEM
+  ON_DEMAND
+}
+
+enum EndpointServiceStatus {
+  CONTINUE_PENDING
+  PAUSED
+  PAUSE_PENDING
+  RUNNING
+  START_PENDING
+  STOPPED
+  STOP_PENDING
+}
+
+type EndpointSoftwarePackage {
+  name: String!
+  installedVersions: [EndpointSoftwarePackageVersion!]
+  installableVersions: [EndpointSoftwarePackageVersion!]
+  updateToVersions: [EndpointSoftwarePackageVersion!]
+}
+
+type EndpointSoftwarePackageVersion {
+  version: String!
+  removable: Boolean!
+  softwarePackageID: ID
+}
+
+input EndpointSource {
+  tds: EndpointSourceTDS
+  ts: EndpointSourceTS
+}
+
+input EndpointSourceTDS {
+  allNamespaces: Boolean! = false
+  namespaces: [String!]
+  excludeErrors: Boolean! = false
+  excludeNoResults: Boolean! = false
+}
+
+input EndpointSourceTS {
+  expectedCount: Int
+  stableWaitTime: Int
+  maxWaitTime: Int! = 30
+  minPercentage: Float
+  maxAge: Int
+  excludeErrors: Boolean! = false
+  excludeNoResults: Boolean! = false
+}
+
+type EndpointUser {
+  name: String!
+  email: String!
+  phoneNumber: String!
+  department: String!
+  city: String!
+  country: String!
+}
+
+type EndpointWindowsOS {
+  type: String!
+  majorVersion: String!
+  releaseId: String!
+}
+
+input EntitiesQueryParams {
+  ids: [ID]
+  eids: [ID]
+  category: [EntityCategory]
+}
+
+enum EntityCategory {
+  ManagedEndpoint
+  UnmanagedEndpoint
+  ConfigurationItemClass
+  CustomerItem
+  ManagedItem
+}
+
+input EntityInput {
+  id: ID
+  name: String!
+  namespace: String
+  eid: ID
+  category: EntityCategory!
+  comments: String
+  private: Boolean!
+  details: Map
+  entityClassIDs: [ID!]
+}
+
+type EntityPagination {
+  items: [CIEntity]!
+  pageInfo: PaginationInfo!
+}
+
+enum EntitySortField {
+  id
+  name
+  namespace
+  eid
+  category
+  comments
+  private
+  details
+  created
+  updated
+}
+
+input EntitySortRequest {
+  field: EntitySortField!
+  order: SortOrder
 }
 
 input FieldFilter {
@@ -188,6 +1229,193 @@ enum FieldFilterOp {
   READ_AFTER
 }
 
+enum FilterField {
+  INVALID
+  ENDPOINT_CHASSIS_TYPE
+  ENDPOINT_COMPLIANCE_COMPLIANCE_FINDINGS
+  ENDPOINT_COMPLIANCE_COMPLIANCE_FINDINGS_CATEGORY
+  ENDPOINT_COMPLIANCE_COMPLIANCE_FINDINGS_FIRST_FOUND_DATE
+  ENDPOINT_COMPLIANCE_COMPLIANCE_FINDINGS_ID
+  ENDPOINT_COMPLIANCE_COMPLIANCE_FINDINGS_LAST_SCAN_DATE
+  ENDPOINT_COMPLIANCE_COMPLIANCE_FINDINGS_PROFILE
+  ENDPOINT_COMPLIANCE_COMPLIANCE_FINDINGS_PROFILE_VERSION
+  ENDPOINT_COMPLIANCE_COMPLIANCE_FINDINGS_RULE
+  ENDPOINT_COMPLIANCE_COMPLIANCE_FINDINGS_RULE_ID
+  ENDPOINT_COMPLIANCE_COMPLIANCE_FINDINGS_STANDARD
+  ENDPOINT_COMPLIANCE_COMPLIANCE_FINDINGS_STANDARD_VERSION
+  ENDPOINT_COMPLIANCE_COMPLIANCE_FINDINGS_STATE
+  ENDPOINT_COMPLIANCE_CVE_FINDINGS
+  ENDPOINT_COMPLIANCE_CVE_FINDINGS_ABSOLUTE_FIRST_FOUND_DATE
+  ENDPOINT_COMPLIANCE_CVE_FINDINGS_CVE_ID
+  ENDPOINT_COMPLIANCE_CVE_FINDINGS_CVE_YEAR
+  ENDPOINT_COMPLIANCE_CVE_FINDINGS_CVSS_SCORE
+  ENDPOINT_COMPLIANCE_CVE_FINDINGS_CVSS_SCORE_V3
+  ENDPOINT_COMPLIANCE_CVE_FINDINGS_FIRST_FOUND
+  ENDPOINT_COMPLIANCE_CVE_FINDINGS_LAST_FOUND
+  ENDPOINT_COMPLIANCE_CVE_FINDINGS_LAST_SCAN_DATE
+  ENDPOINT_COMPLIANCE_CVE_FINDINGS_SEVERITY
+  ENDPOINT_COMPLIANCE_CVE_FINDINGS_SEVERITY_V3
+  ENDPOINT_COMPLIANCE_CVE_FINDINGS_SUMMARY
+  ENDPOINT_COMPUTER_ID
+  ENDPOINT_DEPLOYED_SOFTWARE_PACKAGES
+  ENDPOINT_DEPLOYED_SOFTWARE_PACKAGES_APPLICABILITY
+  ENDPOINT_DEPLOYED_SOFTWARE_PACKAGES_GALLERY
+  ENDPOINT_DEPLOYED_SOFTWARE_PACKAGES_ID
+  ENDPOINT_DEPLOYED_SOFTWARE_PACKAGES_NAME
+  ENDPOINT_DEPLOYED_SOFTWARE_PACKAGES_VENDOR
+  ENDPOINT_DEPLOYED_SOFTWARE_PACKAGES_VERSION
+  ENDPOINT_DISCOVER_DISCOVER_METHOD
+  ENDPOINT_DISCOVER_DISCOVER_PROFILE
+  ENDPOINT_DISCOVER_NAT_IP_ADDRESS
+  ENDPOINT_DISCOVER_OPEN_PORTS
+  ENDPOINT_DISKS_FREE
+  ENDPOINT_DISKS_NAME
+  ENDPOINT_DISKS_TOTAL
+  ENDPOINT_DISKS_USED_PERCENTAGE
+  ENDPOINT_DISKS_USED_SPACE
+  ENDPOINT_DISK_SPACE_FREE
+  ENDPOINT_DISK_SPACE_TOTAL
+  ENDPOINT_DISK_SPACE_USED_PERCENTAGE
+  ENDPOINT_DISK_SPACE_USED_SPACE
+  ENDPOINT_DOMAIN_NAME
+  ENDPOINT_EID_FIRST_SEEN
+  ENDPOINT_EID_LAST_SEEN
+  ENDPOINT_EVENT_COUNTS_ALL
+  ENDPOINT_EVENT_COUNTS_APP_CRASH
+  ENDPOINT_EVENT_COUNTS_CPU
+  ENDPOINT_EVENT_COUNTS_DISK
+  ENDPOINT_EVENT_COUNTS_MEMORY
+  ENDPOINT_EVENT_COUNTS_NETWORK
+  ENDPOINT_ID
+  ENDPOINT_INSTALLED_APPLICATIONS
+  ENDPOINT_INSTALLED_APPLICATIONS_NAME
+  ENDPOINT_INSTALLED_APPLICATIONS_SILENT_UNINSTALL_STRING
+  ENDPOINT_INSTALLED_APPLICATIONS_UNINSTALLABLE
+  ENDPOINT_INSTALLED_APPLICATIONS_VERSION
+  ENDPOINT_IP_ADDRESS
+  ENDPOINT_IP_ADDRESSES
+  ENDPOINT_IS_ENCRYPTED
+  ENDPOINT_IS_VIRTUAL
+  ENDPOINT_LAST_LOGGED_IN_USER
+  ENDPOINT_MAC_ADDRESSES
+  ENDPOINT_MANUFACTURER
+  ENDPOINT_MEMORY_RAM
+  ENDPOINT_MEMORY_TOTAL
+  ENDPOINT_MODEL
+  ENDPOINT_NAME
+  ENDPOINT_NAMESPACE
+  ENDPOINT_NETWORKING_ADAPTERS_CONNECTION_ID
+  ENDPOINT_NETWORKING_ADAPTERS_MAC_ADDRESS
+  ENDPOINT_NETWORKING_ADAPTERS_MANUFACTURER
+  ENDPOINT_NETWORKING_ADAPTERS_NAME
+  ENDPOINT_NETWORKING_ADAPTERS_SPEED
+  ENDPOINT_NETWORKING_ADAPTERS_TYPE
+  ENDPOINT_NETWORKING_DNS_SERVERS
+  ENDPOINT_NETWORKING_WIRELESS_ADAPTERS_SSID
+  ENDPOINT_NETWORKING_WIRELESS_ADAPTERS_STATE
+  ENDPOINT_OS_GENERATION
+  ENDPOINT_OS_LANGUAGE
+  ENDPOINT_OS_NAME
+  ENDPOINT_OS_PLATFORM
+  ENDPOINT_OS_WINDOWS_MAJOR_VERSION
+  ENDPOINT_OS_WINDOWS_RELEASE_ID
+  ENDPOINT_OS_WINDOWS_TYPE
+  ENDPOINT_PRIMARY_USER_CITY
+  ENDPOINT_PRIMARY_USER_COUNTRY
+  ENDPOINT_PRIMARY_USER_DEPARTMENT
+  ENDPOINT_PRIMARY_USER_EMAIL
+  ENDPOINT_PRIMARY_USER_NAME
+  ENDPOINT_PRIMARY_USER_PHONE_NUMBER
+  ENDPOINT_PROCESSOR_ARCHITECTURE
+  ENDPOINT_PROCESSOR_CACHE_SIZE
+  ENDPOINT_PROCESSOR_CONSUMPTION
+  ENDPOINT_PROCESSOR_CPU
+  ENDPOINT_PROCESSOR_FAMILY
+  ENDPOINT_PROCESSOR_HIGH_CONSUMPTION
+  ENDPOINT_PROCESSOR_LOGICAL_PROCESSORS
+  ENDPOINT_PROCESSOR_MANUFACTURER
+  ENDPOINT_PROCESSOR_REVISION
+  ENDPOINT_PROCESSOR_SPEED
+  ENDPOINT_RISK
+  ENDPOINT_RISK_ASSET_CRITICALITY
+  ENDPOINT_RISK_CRITICALITY_SCORE
+  ENDPOINT_RISK_RISK_LEVEL
+  ENDPOINT_RISK_TOTAL_SCORE
+  ENDPOINT_RISK_VECTORS_ADMINISTRATIVE_ACCESS
+  ENDPOINT_RISK_VECTORS_ADMINISTRATIVE_ACCESS_DIRECT
+  ENDPOINT_RISK_VECTORS_ADMINISTRATIVE_ACCESS_IMPACT_RATING
+  ENDPOINT_RISK_VECTORS_ADMINISTRATIVE_ACCESS_IMPACT_RATING_SCORE
+  ENDPOINT_RISK_VECTORS_ADMINISTRATIVE_ACCESS_INBOUND
+  ENDPOINT_RISK_VECTORS_ADMINISTRATIVE_ACCESS_INDIRECT
+  ENDPOINT_RISK_VECTORS_ADMINISTRATIVE_ACCESS_OUTBOUND
+  ENDPOINT_RISK_VECTORS_ADMINISTRATIVE_ACCESS_SCORE
+  ENDPOINT_RISK_VECTORS_ADMINISTRATIVE_ACCESS_SESSIONS
+  ENDPOINT_RISK_VECTORS_COMPLIANCE
+  ENDPOINT_RISK_VECTORS_COMPLIANCE_COMPLIANCE_FAIL_COUNT
+  ENDPOINT_RISK_VECTORS_COMPLIANCE_SCORE
+  ENDPOINT_RISK_VECTORS_EXPIRED_CERTIFICATES
+  ENDPOINT_RISK_VECTORS_EXPIRED_CERTIFICATES_CERTIFICATES_COUNT
+  ENDPOINT_RISK_VECTORS_EXPIRED_CERTIFICATES_PORTS
+  ENDPOINT_RISK_VECTORS_EXPIRED_CERTIFICATES_SCORE
+  ENDPOINT_RISK_VECTORS_INSECURE_TLS
+  ENDPOINT_RISK_VECTORS_INSECURE_TLS_PORTS
+  ENDPOINT_RISK_VECTORS_INSECURE_TLS_PROTOCOLS
+  ENDPOINT_RISK_VECTORS_INSECURE_TLS_SCORE
+  ENDPOINT_RISK_VECTORS_PASSWORD_IDENTIFICATION
+  ENDPOINT_RISK_VECTORS_PASSWORD_IDENTIFICATION_FILES_CONFIRMED
+  ENDPOINT_RISK_VECTORS_PASSWORD_IDENTIFICATION_SCORE
+  ENDPOINT_RISK_VECTORS_SYSTEM_VULNERABILITY
+  ENDPOINT_RISK_VECTORS_SYSTEM_VULNERABILITY_CVE_COUNT
+  ENDPOINT_RISK_VECTORS_SYSTEM_VULNERABILITY_SCORE
+  ENDPOINT_SENTINEL_SCCM_CLIENT_HEALTH
+  ENDPOINT_SENTINEL_SCCM_CLIENT_REASON
+  ENDPOINT_SENTINEL_WINDOWS_DEFENDER_ANTIVIRUS_ENABLED
+  ENDPOINT_SENTINEL_WINDOWS_DEFENDER_ANTIVIRUS_SIGNATURE_UPDATE_AGE
+  ENDPOINT_SENTINEL_WINDOWS_DEFENDER_ANTI_SPYWARE_ENABLED
+  ENDPOINT_SENTINEL_WINDOWS_DEFENDER_CLIENT_VERSION
+  ENDPOINT_SENTINEL_WINDOWS_DEFENDER_HEALTHY
+  ENDPOINT_SENTINEL_WINDOWS_DEFENDER_INSTALLED
+  ENDPOINT_SENTINEL_WINDOWS_DEFENDER_PROCESS_ENABLED
+  ENDPOINT_SENTINEL_WINDOWS_DEFENDER_PROCESS_START_TYPE
+  ENDPOINT_SENTINEL_WINDOWS_DEFENDER_QUICK_SCAN_AGE
+  ENDPOINT_SERIAL_NUMBER
+  ENDPOINT_SERVICES_DISPLAY_NAME
+  ENDPOINT_SERVICES_NAME
+  ENDPOINT_SERVICES_STARTUP_MODE
+  ENDPOINT_SERVICES_STATUS
+  ENDPOINT_SOFTWARE
+  ENDPOINT_SOFTWARE_NAME
+  ENDPOINT_SYSTEM_UUID
+}
+
+enum FilterMatch {
+  ALL
+  ANY
+  NOT
+}
+
+enum FilterOps {
+  EQ
+  LT
+  LTE
+  GT
+  GTE
+  CONTAINS
+  STARTS_WITH
+  ENDS_WITH
+  MATCHES
+  UPDATED_SINCE
+  LAST_SEEN
+}
+
+input FilterSpec {
+  op: FilterOps
+  field: FilterField
+  value: String
+  match: FilterMatch
+  subs: [FilterSpec]
+}
+
 input GraphqlRequiredPrivilege {
   name: String!
   displayName: String!
@@ -211,15 +1439,150 @@ enum GraphqlRestPaginationStyle {
   LIMIT_OFFSET
 }
 
+type IDReference {
+  id: ID!
+  name: String!
+}
+
 input IdRefInput {
   id: ID!
 }
 
+type ImportConfigurationItemEntitiesPayload {
+  entities: [ImportConfigurationItemEntityPayload!]!
+  importedCount: Int!
+  failedCount: Int!
+}
+
+type ImportConfigurationItemEntityPayload {
+  entity: CIEntity
+  errorMessage: String
+}
+
+scalar JSONNumber
+
+input KillProcessInput {
+  connectionID: ID
+  endpoint: OpenDirectConnectionInput
+  pid: Int!
+  name: String!
+  signal: Signal!
+}
+
+type KillProcessPayload {
+  result: Boolean!
+}
+
+input LiveQueryOptions {
+  expectedCount: Int
+  stableWaitTime: Int
+}
+
 scalar Map
 
+type Memory {
+  total: String!
+  ram: String!
+}
+
+input MergeConfigurationItemElementsInput {
+  targetElementId: ID!
+  duplicateElementId: ID!
+}
+
+type MergeConfigurationItemElementsPayload {
+  element: Element
+}
+
+type Metadata {
+  adminFlag: Boolean!
+  name: String!
+  value: String!
+}
+
+enum Modifiers {
+  GetServiceStatus
+  GetServiceStartupMode
+  DetermineConnectedState
+  HandleNoConnectionSSID
+  HandleNoSilentUninstallString
+  IsEncrypted
+  ParseBoolPtrForUninstallable
+  Platform
+}
+
 type Mutation {
+  reportImport(input: ReportImportInput!): ReportImportPayload!
   assetProducts(input: [AssetProductsInput!]!): AssetProductsPayload
   assetsImport(input: AssetsImportInput!): AssetsImportPayload!
+  ping: Boolean!
+  scheduledActionCreate(
+    input: ScheduledActionCreateInput!
+  ): ScheduledActionCreatePayload!
+  scheduledActionApprove(ref: IdRefInput!): ScheduledActionApprovePayload!
+  scheduledActionDelete(ref: IdRefInput!): ScheduledActionDeletePayload!
+  actionCreate(input: ActionCreateInput!): ActionCreatePayload!
+  actionStop(ref: IdRefInput!): ActionStopPayload!
+  actionPerform(input: ActionPerformInput!): ActionPerformPayload!
+  apiTokenGrant(input: APITokenGrantInput!): APITokenGrantPayload!
+  apiTokenRevoke(input: APITokenRevokeInput!): APITokenRevokePayload!
+  apiTokenRotate(input: APITokenRotateInput!): APITokenRotatePayload!
+  computerGroupCreate(
+    input: ComputerGroupCreateInput!
+  ): ComputerGroupCreatePayload!
+  computerGroupDelete(ref: NamedRefInput!): ComputerGroupDeletePayload!
+  actionGroupCreate(input: ActionGroupCreateInput!): ActionGroupCreatePayload!
+  actionGroupDelete(ref: NamedRefInput!): ActionGroupDeletePayload!
+  importConfigurationItemEntities(
+    input: [EntityInput!]!
+  ): ImportConfigurationItemEntitiesPayload!
+  mergeConfigurationItemElements(
+    input: MergeConfigurationItemElementsInput!
+  ): MergeConfigurationItemElementsPayload!
+  upsertRelationship(payload: [RelationshipPayload]!): RelationshipResult
+  syncAssets: SyncAssetResult
+  deleteRelationship(relationships: DeleteRelationshipInput): RelationshipResult
+  deleteConfigurationItemElement(
+    input: DeleteConfigurationItemElementInput!
+  ): DeleteConfigurationItemElementResult
+  updateConfigurationItemProperties(
+    input: UpdateConfigurationItemPropertiesInput!
+  ): UpdateConfigurationItemPropertiesResult
+  directConnectOpen(input: DirectConnectOpenInput!): DirectConnectOpenPayload!
+  directConnectClose(
+    input: DirectConnectCloseInput!
+  ): DirectConnectClosePayload!
+  directConnectPing(input: DirectConnectPingInput!): DirectConnectPingPayload!
+  directConnectProcessTerminate(
+    input: DirectConnectProcessTerminateInput!
+  ): DirectConnectProcessTerminatePayload!
+  openDirectConnection(
+    input: OpenDirectConnectionInput!
+  ): OpenDirectConnectionPayload!
+  closeDirectConnection(
+    input: CloseDirectConnectionInput!
+  ): CloseDirectConnectionPayload!
+  pingDirectConnection(
+    input: PingDirectConnectionInput!
+  ): PingDirectConnectionPayload!
+  killProcess(input: KillProcessInput!): KillProcessPayload!
+  manageSoftware(
+    operation: SoftwareOperation!
+    softwarePackageID: ID!
+    target: SoftwareTarget
+    start: Time!
+    end: Time!
+    description: String
+  ): SoftwareDeploymentDetails!
+  sensorHarvest(input: SensorHarvestInput!): SensorHarvestPayload!
+  threatResponseAlertResolve(
+    ref: ThreatResponseAlertRef!
+  ): ThreatResponseAlertResolvePayload!
+}
+
+type NamedRef {
+  id: ID
+  name: String
 }
 
 input NamedRefInput {
@@ -231,6 +1594,123 @@ input NameOnlyRefInput {
   name: String!
 }
 
+type NetworkAdapter {
+  name: String!
+  manufacturer: String!
+  type: String!
+  macAddress: String!
+  speed: String!
+  connectionId: String!
+}
+
+type Networking {
+  dnsServers: [String]!
+  adapters: [NetworkAdapter]!
+  wirelessAdapters: [WirelessAdapter]!
+}
+
+type NumericIntervalOption {
+  name: String!
+  value: String!
+  model: ParameterDefinitionType!
+  parameterType: ParameterDefinitionType!
+}
+
+input OpenDirectConnectionInput {
+  endpointID: ID
+}
+
+type OpenDirectConnectionPayload {
+  connectionID: ID!
+}
+
+type Package {
+  id: ID!
+  name: String!
+  displayName: String!
+  command: String!
+  commandTimeout: Int!
+  expireSeconds: Int!
+  contentSet: IDReference
+  processGroupFlag: Boolean!
+  skipLockFlag: Boolean!
+  metadata: [Metadata!]!
+  sourceHash: String!
+  sourceHashChangedFlag: Boolean!
+  sourceID: Int!
+  sourceName: String!
+  parameters: [PackageParameter!]!
+  parameterDefinition: ParameterDefinitions
+  rawParameterDefinition: String
+  verifyExpireSeconds: Int!
+}
+
+type PackagePagination {
+  items: [Package]!
+  pageInfo: PaginationInfoWithID!
+}
+
+type PackageParam {
+  name: String!
+  value: String!
+}
+
+type PackageParameter {
+  key: String
+  value: String
+}
+
+input PackageParamInput {
+  name: String!
+  value: String!
+}
+
+type PackageRef {
+  id: ID
+  name: String
+  params: [String!]
+  sensorSourcedParams: [PackageParam!]
+}
+
+input PackageRefInput {
+  id: ID
+  name: String
+  params: [String!]
+  sensorSourcedParams: [PackageParamInput!]
+}
+
+type PackageSpec {
+  id: ID!
+  name: String!
+  contentSetName: String!
+  command: String!
+  commandTimeoutSeconds: Int!
+  expireSeconds: Int!
+  params: [PackageSpecParam!]
+  sensorSourcedParams: [PackageSpecSensorSourcedParam!]
+}
+
+type PackageSpecConnection implements Connection {
+  edges: [PackageSpecEdge!]!
+  pageInfo: PageInfo!
+  totalRecords: Int!
+}
+
+type PackageSpecEdge implements Edge {
+  node: PackageSpec!
+  cursor: Cursor!
+}
+
+type PackageSpecParam {
+  key: String!
+  label: String!
+  defaultValue: String
+}
+
+type PackageSpecSensorSourcedParam {
+  name: String!
+}
+
 type PageInfo {
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
@@ -238,9 +1718,690 @@ type PageInfo {
   endCursor: Cursor
 }
 
+type PaginationInfo {
+  totalPages: Int!
+  totalItems: Int!
+  page: Int!
+  perPage: Int!
+}
+
+type PaginationInfoWithID {
+  id: ID!
+  totalPages: Int!
+  totalItems: Int!
+  page: Int!
+  perPage: Int!
+}
+
+type ParameterDefinition {
+  model: ParameterDefinitionType!
+  parameterType: ParameterDefinitionType!
+  key: String!
+  label: String!
+  helpString: String!
+  defaultValue: String
+  validationExpressions: [ParameterDefinitionValidationExpression!]
+  promptText: String
+  heightInLines: Int
+  maxChars: Int
+  value: String
+  values: [String!]!
+  restrict: String
+  allowEmptyList: Boolean
+  minimum: Int
+  maximum: Int
+  stepSize: Int
+  snapInterval: Int
+  dropdownOptions: [NumericIntervalOption!]
+  componentType: Int
+  startDateRestriction: DefaultRangeEnd
+  endDateRestriction: DefaultRangeEnd
+  startTimeRestriction: DefaultRangeEnd
+  endTimeRestriction: DefaultRangeEnd
+  allowDisableEnd: Boolean
+  defaultRangeStart: DefaultRangeEnd
+  defaultRangeEnd: DefaultRangeEnd
+  separatorText: String
+}
+
+type ParameterDefinitions {
+  parameterType: ParameterDefinitionType!
+  model: ParameterDefinitionType!
+  parameters: [ParameterDefinition!]!
+}
+
+scalar ParameterDefinitionType
+
+type ParameterDefinitionValidationExpression {
+  model: ParameterDefinitionType!
+  parameterType: ParameterDefinitionType!
+  expression: String
+  helpString: String
+}
+
+input PerfQuery {
+  type: PerfQueryType!
+  query: String!
+  from: Time
+  to: Time
+  step: String
+}
+
+enum PerfQueryType {
+  QUERY
+  QUERY_RANGE
+}
+
+type Persona {
+  name: String!
+}
+
+input PingDirectConnectionInput {
+  connectionID: ID!
+}
+
+type PingDirectConnectionPayload {
+  result: Boolean!
+}
+
+type Principal {
+  user: NamedRef!
+  persona: NamedRef
+}
+
+type Process {
+  pid: Int!
+  ppid: Int!
+  name: String!
+  commandLine: String!
+  userName: String!
+  groupName: String!
+  cpuUserTimeSeconds: Float!
+  cpuKernelTimeSeconds: Float!
+  cpuUsagePercent: Float!
+  memoryResidentBytes: Int!
+}
+
+type Processor {
+  cpu: String!
+  architecture: String!
+  cacheSize: String!
+  consumption: String!
+  highConsumption: String!
+  family: String!
+  manufacturer: String!
+  speed: String!
+  revision: String!
+  logicalProcessors: Int!
+}
+
 type Query {
-  assetProductEndpoints(filter: AssetProductEndpointsFilter, after: Cursor, first: Int): AssetProductEndpointConnection
-  assetProducts(filter: AssetProductsFilter, after: Cursor, first: Int): AssetProductConnection
+  reports(
+    after: Cursor
+    first: Int = 20
+    before: Cursor
+    last: Int
+    filter: ReportFieldFilter
+  ): ReportConnection
+  report(ref: IdRefInput!): Report
+  reportResultData(
+    id: ID!
+    after: Cursor
+    first: Int = 20
+    before: Cursor
+    last: Int
+    refresh: Cursor
+  ): ReportResultDataConnection
+  reportExport(ref: IdRefInput!): ReportExportPayload!
+  assetProductEndpoints(
+    filter: AssetProductEndpointsFilter
+    after: Cursor
+    first: Int
+  ): AssetProductEndpointConnection
+  assetProducts(
+    filter: AssetProductsFilter
+    after: Cursor
+    first: Int
+  ): AssetProductConnection
+  now: Time!
+  action(ref: IdRefInput!): Action
+  scheduledAction(ref: IdRefInput!): ScheduledAction
+  scheduledActions(
+    after: Cursor
+    first: Int = 20
+    before: Cursor
+    last: Int
+    filter: FieldFilter
+  ): ScheduledActionConnection
+  myAPITokens: APITokenQueryPayload!
+  computerGroups(
+    after: Cursor
+    first: Int = 20
+    before: Cursor
+    last: Int
+    filter: ComputerGroupsFilter
+  ): ComputerGroupConnection
+  computerGroup(ref: NamedRefInput!): ComputerGroup
+  actionGroups(
+    after: Cursor
+    first: Int = 20
+    before: Cursor
+    last: Int
+  ): ActionGroupConnection
+  actionGroup(ref: NamedRefInput!): ActionGroup
+  endpoints(
+    after: Cursor
+    first: Int = 20
+    before: Cursor
+    last: Int
+    filter: EndpointFieldFilter
+    source: EndpointSource
+    refresh: Cursor
+  ): EndpointConnection
+  endpointIdChanges(after: Time!, namespace: String): EndpointIdChangesPayload!
+  packageSpecs(
+    after: Cursor
+    first: Int = 20
+    before: Cursor
+    last: Int
+    filter: FieldFilter
+  ): PackageSpecConnection
+  packages(
+    paginationId: String
+    page: Int
+    perPage: Int
+    filterSet: String
+  ): PackagePagination
+  sensors(
+    after: Cursor
+    first: Int = 2000
+    before: Cursor
+    last: Int
+    filter: FieldFilter
+    includeHidden: Boolean! = false
+  ): SensorConnection
+  configurationItemEntities(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    params: EntitiesQueryParams
+    sort: [EntitySortRequest]
+  ): ConfigurationItemEntityConnection
+  configurationItemRelationships(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    params: RelationshipQueryParams
+    sort: [RelationshipSortRequest]
+  ): ConfigurationItemRelationshipConnection
+  relationshipTypes: RelationshipTypeResult
+  configurationItemProperties: ConfigurationItemProperties
+  directConnectEndpoint(input: DirectConnectEndpointInput!): DirectConnect
+  directConnectConnectionStatus(
+    input: DirectConnectConnectionStatusInput!
+  ): DirectConnectConnectionStatusPayload!
+  directEndpoint(input: OpenDirectConnectionInput!): DirectConnect
+  softwarePackages(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+  ): SoftwarePackageConnection
+  softwareDeployment(id: ID): [SoftwareDeploymentDetails!]!
+}
+
+type Relationship {
+  id: ID!
+  entityA: ID!
+  entityB: ID!
+  type: String!
+  created: Time!
+  updated: Time!
+  details(schemaVersion: String): Map
+}
+
+type RelationshipPagination {
+  items: [Relationship]!
+  pageInfo: PaginationInfo!
+}
+
+input RelationshipPayload {
+  id: ID
+  entityA: ID!
+  entityB: ID!
+  type: String!
+  details: Map
+}
+
+input RelationshipQueryParams {
+  ids: [ID]
+  entityIds: [ID]
+  entityEids: [ID]
+  type: String
+}
+
+type RelationshipResult {
+  items: [Relationship]!
+}
+
+enum RelationshipSortField {
+  id
+  className
+  entityName
+  entityA
+  entityB
+  relationshipType
+}
+
+input RelationshipSortRequest {
+  field: RelationshipSortField!
+  order: SortOrder
+}
+
+type RelationshipType {
+  type: String!
+  edgeDirection: EdgeDirection!
+}
+
+type RelationshipTypeResult {
+  items: [RelationshipType]!
+}
+
+type Report {
+  id: ID!
+  name: String!
+  description: String!
+  contentSet: NamedRef!
+  labels: [String!]
+  createdTime: Time!
+  author: Principal!
+  modifiedTime: Time!
+  lastModifiedBy: Principal!
+  moduleName: String
+  favorite: Boolean!
+  viewDetails: ReportView!
+}
+
+type ReportConnection implements Connection {
+  edges: [ReportEdge!]!
+  pageInfo: PageInfo!
+  totalRecords: Int!
+}
+
+type ReportEdge implements Edge {
+  node: Report!
+  cursor: Cursor!
+}
+
+type ReportExportPayload {
+  reportDefinition: String!
+}
+
+input ReportFieldFilter {
+  moduleNames: [String!]
+  authorNames: [String!]
+  createdBefore: Time
+  createdAfter: Time
+  text: String
+  contentSetNames: [String!]
+  labels: [String!]
+}
+
+input ReportImportInput {
+  allowDuplicate: Boolean! = false
+  reportDefinition: String!
+}
+
+type ReportImportPayload {
+  report: Report
+  error: SystemError
+}
+
+type ReportResultDataCollectionInfo {
+  active: Boolean!
+  startCursor: Cursor
+}
+
+type ReportResultDataColumn {
+  values: [String!]
+}
+
+type ReportResultDataConnection implements Connection {
+  viewDetails: ReportView!
+  edges: [ReportResultDataEdge!]!
+  pageInfo: PageInfo!
+  totalRecords: Int!
+  collectionInfo: ReportResultDataCollectionInfo!
+}
+
+type ReportResultDataEdge implements Edge {
+  node: ReportResultDataRow!
+  cursor: Cursor!
+}
+
+type ReportResultDataRow {
+  columns: [ReportResultDataColumn!]!
+}
+
+type ReportView {
+  sources: [ReportViewSource!]!
+  columns: [ReportViewColumn!]!
+  sort: [ReportViewColumnSort!]!
+}
+
+type ReportViewColumn {
+  name: String!
+  sourceName: String!
+  sourceColumnName: String!
+}
+
+type ReportViewColumnSort {
+  name: String!
+  index: Int!
+  descending: Boolean!
+}
+
+type ReportViewSource {
+  name: String!
+  flatten: Boolean!
+}
+
+type ScheduledAction {
+  id: ID!
+  targets: ActionTargets!
+  package: PackageRef!
+  distributeSeconds: Int
+  expireSeconds: Int
+  endTime: Time
+  issueSeconds: Int
+  startTime: Time
+  name: String!
+  comment: String!
+  approved: Boolean!
+  issueCount: Int!
+  lastStartTime: Time
+  nextStartTime: Time
+  status: ScheduledActionStatus
+  creator: Principal!
+  approver: Principal
+  metadata: [Metadata!]!
+  lastAction: Action
+}
+
+type ScheduledActionApprovePayload {
+  id: ID
+  approved: Boolean
+  error: SystemError
+}
+
+type ScheduledActionConnection implements Connection {
+  edges: [ScheduledActionEdge!]!
+  pageInfo: PageInfo!
+  totalRecords: Int!
+}
+
+input ScheduledActionCreateInput {
+  targets: ActionTargetsInput!
+  package: PackageRefInput!
+  schedule: ScheduledActionScheduleInput!
+  name: String
+  comment: String
+}
+
+type ScheduledActionCreatePayload {
+  scheduledAction: ScheduledAction
+  error: SystemError
+}
+
+type ScheduledActionDeletePayload {
+  id: ID
+  error: SystemError
+}
+
+type ScheduledActionEdge implements Edge {
+  node: ScheduledAction!
+  cursor: Cursor!
+}
+
+input ScheduledActionScheduleInput {
+  distributeSeconds: Int = 0
+  expireSeconds: Int
+  reissueSeconds: Int!
+  startTime: Time
+  endTime: Time
+}
+
+enum ScheduledActionStatus {
+  ENABLED
+  DISABLED
+  DELETED
+}
+
+type Sensor {
+  name: String!
+  description: String!
+  contentSetName: String!
+  virtual: Boolean!
+  parameters: [SensorParameter!]
+  columns: [SensorColumn!]
+  harvested: Boolean!
+  endpointQueryPaths: [[String!]!]!
+  parameterizations: [SensorParameterization!]
+  category: String!
+  maxAgeSeconds: Int
+  ignoreCase: Boolean!
+  keepDuplicatesFlag: Boolean
+  valueType: String!
+  scripts: [SensorScript!]
+  created: Time
+  updated: Time
+  hidden: Boolean!
+}
+
+type SensorColumn {
+  name: String!
+  ignoreCase: Boolean!
+  valueType: String!
+  hidden: Boolean!
+}
+
+type SensorConnection implements Connection {
+  edges: [SensorEdge!]!
+  pageInfo: PageInfo!
+  totalRecords: Int!
+}
+
+type SensorEdge implements Edge {
+  node: Sensor!
+  cursor: Cursor!
+}
+
+input SensorHarvestInput {
+  name: String!
+  parameters: [EndpointSensorRefParam!]
+  integrationName: String!
+  harvest: Boolean!
+  cursor: Cursor
+}
+
+type SensorHarvestPayload {
+  cursor: Cursor
+  success: Boolean
+  error: SystemError
+}
+
+type SensorParameter {
+  name: String!
+  defaultValue: String
+}
+
+type SensorParameterization {
+  values: [SensorParameterValue!]!
+  harvested: Boolean!
+  endpointQueryPaths: [[String!]!]!
+}
+
+input SensorParameters {
+  duration: String
+  category: String
+}
+
+type SensorParameterValue {
+  name: String!
+  value: String!
+}
+
+enum SensorResultValueType {
+  String
+  Version
+  Numeric
+  BESDate
+  IPAddress
+  WMIDate
+  TimeDiff
+  DataSize
+  NumericInteger
+}
+
+type SensorScript {
+  platform: EndpointPlatform!
+  source: String!
+  type: SensorScriptType!
+}
+
+enum SensorScriptType {
+  Unknown
+  BESRelevance
+  JScript
+  Powershell
+  Python
+  UnixShell
+  VBScript
+  WMIQuery
+}
+
+input SensorValueFilter {
+  column: String
+  op: SensorValueFilterOp! = EQ
+  value: String
+  filters: [SensorValueFilter!]
+  any: Boolean! = false
+  restrictOwner: Boolean! = true
+}
+
+enum SensorValueFilterOp {
+  EQ
+  LT
+  LTE
+  GT
+  GTE
+  CONTAINS
+  STARTS_WITH
+  ENDS_WITH
+  MATCHES
+}
+
+enum SettingName {
+  LOG_VERBOSITY_LEVEL
+  RANDOM_SENSOR_DELAY_IN_SECONDS
+  STATE_PROTECTED_FLAG
+  HOT_CACHE_PERCENTAGE
+}
+
+enum Signal {
+  SIGINT
+  SIGKILL
+  SIGTERM
+}
+
+type SoftwareApplicabilityCounts {
+  installEligibleCount: Int!
+  installedCount: Int!
+  notApplicableCount: Int!
+  updateEligibleCount: Int!
+  updateIneligibleCount: Int!
+}
+
+type SoftwareDeploymentDetails {
+  ID: ID!
+  name: String!
+  errors: [SoftwareDeploymentErrorCount!]
+  status: SoftwareDeploymentStatus
+}
+
+type SoftwareDeploymentErrorCount {
+  error: String!
+  count: Int!
+}
+
+type SoftwareDeploymentStatus {
+  label: SoftwareDeploymentStatusLabel!
+  completeCount: Int!
+  downloadCompleteWaitingCount: Int!
+  downloadingCount: Int!
+  failedCount: Int!
+  notApplicableCount: Int!
+  runningCount: Int!
+  waitingCount: Int!
+}
+
+enum SoftwareDeploymentStatusLabel {
+  ACTIVE
+  SCHEDULED
+  STOPPED
+  FINISHED
+}
+
+enum SoftwareOperation {
+  INSTALL
+  UPDATE
+  INSTALL_OR_UPDATE
+  REMOVE
+}
+
+type SoftwarePackage {
+  id: ID!
+  platform: EndpointPlatform!
+  productName: String!
+  productVendor: String!
+  productVersion: String!
+  applicabilityCounts: SoftwareApplicabilityCounts
+}
+
+type SoftwarePackageConnection implements Connection {
+  edges: [SoftwarePackageEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type SoftwarePackageEdge implements Edge {
+  cursor: Cursor!
+  node: SoftwarePackage!
+}
+
+input SoftwareTarget {
+  targetGroup: String
+  endpoints: [ID]
+}
+
+enum SortOrder {
+  asc
+  desc
+}
+
+enum StabilityLevel {
+  STABLE
+  LEGACY
+  EXPERIMENTAL_RELEASE_CANDIDATE
+  EXPERIMENTAL_ACTIVE_DEVELOPMENT
+  EXPERIMENTAL_EARLY_DEVELOPMENT
+  DEPRECATED
+}
+
+type SyncAssetResult {
+  success: Boolean!
 }
 
 type SystemError {
@@ -249,4 +2410,27 @@ type SystemError {
   timedOut: Boolean
 }
 
+input ThreatResponseAlertRef {
+  guid: ID
+}
+
+type ThreatResponseAlertResolvePayload {
+  resolved: Boolean
+  guid: ID
+  error: SystemError
+}
+
 scalar Time
+
+input UpdateConfigurationItemPropertiesInput {
+  userSpecifiedAssetsMaxAge: Int
+}
+
+type UpdateConfigurationItemPropertiesResult {
+  userSpecifiedAssetsMaxAge: Int
+}
+
+type WirelessAdapter {
+  ssid: String!
+  state: ConnectedState!
+}
