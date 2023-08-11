@@ -4,10 +4,7 @@ import {
 } from '@jupiterone/integration-sdk-core';
 import { AssetProduct } from '../../tanium/gql-types';
 import { Entities } from '../constants';
-
-function formatKey(str: string) {
-  return str.toLowerCase().split(' ').join('-');
-}
+import formatKey from '../../utils/formatKey';
 
 export function createApplicationEntityKey({ name, vendor }: AssetProduct) {
   return formatKey(`${Entities.APPLICATION._type}:${vendor}:${name}`);

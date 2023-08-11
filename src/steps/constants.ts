@@ -9,10 +9,16 @@ export const Steps = {
   ENDPOINTS: 'fetch-endpoints',
   USERS: 'fetch-users',
   APPLICATIONS: 'fetch-applications',
+  INSTALLED_APPLICATIONS: 'fetch-installed-applications',
 };
 
 export const Entities: Record<
-  'ACCOUNT' | 'ENDPOINT' | 'USER' | 'APPLICATION' | 'VERSION',
+  | 'ACCOUNT'
+  | 'ENDPOINT'
+  | 'USER'
+  | 'APPLICATION'
+  | 'VERSION'
+  | 'INSTALLED_APPLICATION',
   StepEntityMetadata
 > = {
   ACCOUNT: {
@@ -43,12 +49,19 @@ export const Entities: Record<
     _type: 'tanium_application_version',
     _class: ['Record'],
   },
+  INSTALLED_APPLICATION: {
+    resourceName: 'Installed Application',
+    _type: 'tanium_installed_application',
+    _class: ['Record'],
+  },
 };
 export const Relationships: Record<
   | 'ACCOUNT_HAS_ENDPOINT'
   | 'ACCOUNT_HAS_USER'
   | 'ACCOUNT_HAS_APPLICATION'
-  | 'APPLICATION_HAS_VERISON',
+  | 'APPLICATION_HAS_VERSION'
+  | 'ENDPOINT_HAS_INSTALLED_APPLICATION'
+  | 'INSTALLED_APPLICATION_IS_VERSION',
   StepRelationshipMetadata
 > = {
   ACCOUNT_HAS_ENDPOINT: {
@@ -69,10 +82,22 @@ export const Relationships: Record<
     _type: 'tanium_account_has_application',
     _class: RelationshipClass.HAS,
   },
-  APPLICATION_HAS_VERISON: {
+  APPLICATION_HAS_VERSION: {
     sourceType: Entities.APPLICATION._type,
     targetType: Entities.VERSION._type,
     _type: 'tanium_application_has_version',
     _class: RelationshipClass.HAS,
+  },
+  ENDPOINT_HAS_INSTALLED_APPLICATION: {
+    sourceType: Entities.ENDPOINT._type,
+    targetType: Entities.INSTALLED_APPLICATION._type,
+    _type: 'tanium_endpoint_has_installed_application',
+    _class: RelationshipClass.HAS,
+  },
+  INSTALLED_APPLICATION_IS_VERSION: {
+    sourceType: Entities.INSTALLED_APPLICATION._type,
+    targetType: Entities.VERSION._type,
+    _type: 'tanium_installed_application_is_version',
+    _class: RelationshipClass.IS,
   },
 };

@@ -24,7 +24,7 @@
 
 /* endpoints(after: Cursor, first: Int = 20, before: Cursor, last: Int, filter: EndpointFieldFilter, source: EndpointSource, refresh: Cursor): EndpointConnection*/
 export enum Queries {
-  ENDPOINT_QUERY = `query assetProductEndpoints(
+  ASSET_PRODUCT_ENDPOINTS_QUERY = `query assetProductEndpoints(
       $after: Cursor,
       $first: Int,
       $filter: AssetProductEndpointsFilter,
@@ -109,6 +109,21 @@ export enum Queries {
           endCursor
         }
         totalCount
+      }
+    }`,
+  INSTALLED_APPLICATIONS_QUERY = `query installedApplications($filter: EndpointFieldFilter) {
+      endpoints(filter: $filter) {
+        edges {
+          node {
+            computerID
+            installedApplications {
+              name
+              version
+              silentUninstallString
+              uninstallable
+            }
+          }
+        }
       }
     }`,
 }
