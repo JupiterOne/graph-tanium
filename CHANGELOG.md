@@ -1,3 +1,15 @@
+# v0.5.0 (Fri Aug 11 2023)
+
+#### 🚀 Enhancement
+
+- INT-8744 - ingest installed applications [#18](https://github.com/JupiterOne/graph-tanium/pull/18) (ronald.arias@contractor.jupiterone.com)
+
+#### Authors: 1
+
+- Ronald Arias ([@RonaldEAM](https://github.com/RonaldEAM))
+
+---
+
 # v0.4.3 (Tue Jul 25 2023)
 
 #### 🐛 Bug Fix
