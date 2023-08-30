@@ -57,6 +57,9 @@ async function fetchInstalledApplications({
         async (installedApplication) => {
           const installedApplicationEntity =
             createInstalledApplicationEntity(installedApplication);
+          if (jobState.hasKey(installedApplicationEntity._key)) {
+            return;
+          }
           await jobState.addEntity(installedApplicationEntity);
 
           await jobState.addRelationship(
