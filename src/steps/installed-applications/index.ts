@@ -7,8 +7,8 @@ import {
 import { IntegrationConfig } from '../../config';
 import { Entities, Relationships, Steps } from '../constants';
 import { createAPIClient } from '../../tanium/client';
-import { createApplicationVersionEntityKey } from '../applications/converter';
 import buildInstalledApplicationConverter from './converter';
+import formatKey from '../../utils/formatKey';
 
 export const installedApplicationsSteps: IntegrationStep<IntegrationConfig>[] =
   [
@@ -31,6 +31,22 @@ async function fetchInstalledApplications({
   jobState,
 }: IntegrationStepExecutionContext<IntegrationConfig>) {
   const client = createAPIClient(instance.config);
+
+  const applicationVersionKeysMap = new Map<string, string[]>();
+  await jobState.iterateEntities(
+    { _type: Entities.VERSION._type },
+    (versionEntity) => {
+      const key = formatKey(`${versionEntity.name}:${versionEntity.version}`);
+      if (!applicationVersionKeysMap.has(key)) {
+        applicationVersionKeysMap.set(key, []);
+      }
+      applicationVersionKeysMap.set(key, [
+        ...(applicationVersionKeysMap.get(key) || []),
+        versionEntity._key,
+      ]);
+    },
+  );
+
   await jobState.iterateEntities(
     { _type: Entities.ENDPOINT._type },
     async (endpointEntity) => {
@@ -51,20 +67,26 @@ async function fetchInstalledApplications({
             }),
           );
 
-          const applicationVersionKey = createApplicationVersionEntityKey(
-            endpointEntity.vendor as string,
-            installedApplication.name,
-            installedApplication.version,
+          const applicationVersionKey = formatKey(
+            `${installedApplication.name}:${installedApplication.version}`,
           );
-          if (jobState.hasKey(applicationVersionKey)) {
-            await jobState.addRelationship(
-              createDirectRelationship({
-                _class: RelationshipClass.IS,
-                fromKey: installedApplicationEntity._key,
-                fromType: Entities.INSTALLED_APPLICATION._type,
-                toKey: applicationVersionKey,
-                toType: Entities.VERSION._type,
-              }),
+          if (applicationVersionKeysMap.has(applicationVersionKey)) {
+            const versionEntityKeys = applicationVersionKeysMap.get(
+              applicationVersionKey,
+            ) as string[];
+            const installedApplicationIsVersionRelationships = versionEntityKeys
+              .filter((versionKey) => jobState.hasKey(versionKey))
+              .map((versionKey) =>
+                createDirectRelationship({
+                  _class: RelationshipClass.IS,
+                  fromKey: installedApplicationEntity._key,
+                  fromType: Entities.INSTALLED_APPLICATION._type,
+                  toKey: versionKey,
+                  toType: Entities.VERSION._type,
+                }),
+              );
+            await jobState.addRelationships(
+              installedApplicationIsVersionRelationships,
             );
           }
         },
