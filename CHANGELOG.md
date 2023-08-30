@@ -1,3 +1,15 @@
+# v0.5.1 (Wed Aug 30 2023)
+
+#### 🐛 Bug Fix
+
+- INT-9441 - add computerId in installed applications [#19](https://github.com/JupiterOne/graph-tanium/pull/19) (ronald.arias@contractor.jupiterone.com)
+
+#### Authors: 1
+
+- Ronald Arias ([@RonaldEAM](https://github.com/RonaldEAM))
+
+---
+
 # v0.5.0 (Fri Aug 11 2023)
 
 #### 🚀 Enhancement
