@@ -7,8 +7,8 @@ import {
 import { IntegrationConfig } from '../../config';
 import { Entities, Relationships, Steps } from '../constants';
 import { createAPIClient } from '../../tanium/client';
-import createInstalledApplicationEntity from './converter';
 import { createApplicationVersionEntityKey } from '../applications/converter';
+import buildInstalledApplicationConverter from './converter';
 
 export const installedApplicationsSteps: IntegrationStep<IntegrationConfig>[] =
   [
@@ -34,6 +34,8 @@ async function fetchInstalledApplications({
   await jobState.iterateEntities(
     { _type: Entities.ENDPOINT._type },
     async (endpointEntity) => {
+      const createInstalledApplicationEntity =
+        buildInstalledApplicationConverter(endpointEntity.computerId as string);
       await client.iterateInstalledApplications(
         endpointEntity.computerId as string,
         async (installedApplication) => {

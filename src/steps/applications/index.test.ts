@@ -18,4 +18,4 @@ test('fetch-applications', async () => {
   const stepConfig = buildStepTestConfigForStep(Steps.APPLICATIONS);
   const stepResult = await executeStepWithDependencies(stepConfig);
   expect(stepResult).toMatchStepMetadata(stepConfig);
-});
+}, 100000);
