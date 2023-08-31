@@ -1,3 +1,15 @@
+# v0.5.2 (Thu Aug 31 2023)
+
+#### 🐛 Bug Fix
+
+- INT-9441 - fix duplicate key error [#20](https://github.com/JupiterOne/graph-tanium/pull/20) (ronald.arias@contractor.jupiterone.com)
+
+#### Authors: 1
+
+- Ronald Arias ([@RonaldEAM](https://github.com/RonaldEAM))
+
+---
+
 # v0.5.1 (Wed Aug 30 2023)
 
 #### 🐛 Bug Fix
