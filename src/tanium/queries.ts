@@ -126,4 +126,50 @@ export enum Queries {
         }
       }
     }`,
+  APPLICABLE_PATCHES_QUERY = `query getApplicablePatches($filter: EndpointFieldFilter) {
+    endpoints(filter: $filter) {
+      edges {
+        node {
+          computerID
+          sensorReadings(sensors:[{name:"Applicable Patches"}]) {
+            columns {
+              name
+              values
+            }
+          }
+        }
+      }
+    }
+  }`,
+  INSTALLED_PATCHES_QUERY = `query getPatchInstallationHistory($filter: EndpointFieldFilter) {
+    endpoints(filter: $filter) {
+      edges {
+        node {
+          computerID
+          sensorReadings(
+            sensors: [
+              {
+                name: "Patch Installation History"
+                params: [
+                  { name: "iAge", value: "90" }
+                  { name: "showDate", value: "1" }
+                  { name: "showOther", value: "1" }
+                  { name: "showSCCM", value: "1" }
+                  { name: "showTanium", value: "1" }
+                  { name: "showWUSA", value: "1" }
+                  { name: "showWU", value: "1" }
+                ]
+              }
+  
+            ]
+          ) {
+            columns {
+              name
+              values
+            }
+          }
+        }
+      }
+    }
+  }`,
 }
