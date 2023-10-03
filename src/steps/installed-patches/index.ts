@@ -37,7 +37,11 @@ async function fetchInstalledPatches({
         endpointEntity.computerId as string,
         async (installedPatch) => {
           if (
-            ['[no results]', 'No Patches Found'].includes(installedPatch.title)
+            !installedPatch.title ||
+            ['[no results]', 'No Patches Found'].includes(
+              installedPatch.title,
+            ) ||
+            installedPatch.title.toLowerCase().startsWith('tse-error')
           ) {
             return;
           }

@@ -1,13 +1,13 @@
 import { EndpointSensorReadingColumn } from '../tanium/gql-types';
 
 export function normalizeSensorColumns<T extends object>(
-  columns: EndpointSensorReadingColumn[],
+  columns: EndpointSensorReadingColumn[] | undefined,
 ): T[] {
   const records: T[] = [];
-  for (const column of columns) {
+  for (const column of columns || []) {
     const columnName = normalizeSensorColumnName(column.name);
     for (const [key, value] of column.values.entries()) {
-      records[key][columnName] = value;
+      records[key] = { ...(records[key] ?? {}), [columnName]: value };
     }
   }
   return records;

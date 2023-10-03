@@ -36,7 +36,10 @@ async function fetchAvailablePatches({
       await client.iterateApplicablePatches(
         endpointEntity.computerId as string,
         async (applicablePatch) => {
-          if (applicablePatch.title === '[no results]') {
+          if (
+            !applicablePatch.title ||
+            applicablePatch.title === '[no results]'
+          ) {
             return;
           }
           const availablePatchEntity =

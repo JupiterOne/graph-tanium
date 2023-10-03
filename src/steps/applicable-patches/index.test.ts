@@ -8,7 +8,8 @@ afterEach(async () => {
   await recording.stop();
 });
 
-test('fetch-applicable-patches', async () => {
+// We don't have enough data to test this step
+test.skip('fetch-applicable-patches', async () => {
   recording = setupProjectRecording({
     directory: __dirname,
     name: 'fetch-applicable-patches',

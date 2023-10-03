@@ -7,7 +7,7 @@ export function createEndpointEntityKey(id: number) {
 }
 
 export function createEndpointEntity(endpoint: AssetProductEndpoint) {
-  if (endpoint.id) {
+  if (endpoint.id && endpoint.ipAddress) {
     return createIntegrationEntity({
       entityData: {
         source: endpoint,
