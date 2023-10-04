@@ -1,3 +1,15 @@
+# v0.6.0 (Wed Oct 04 2023)
+
+#### 🚀 Enhancement
+
+- INT-9002 - ingest available patches and installed patches [#21](https://github.com/JupiterOne/graph-tanium/pull/21) (ronald.arias@contractor.jupiterone.com)
+
+#### Authors: 1
+
+- Ronald Arias ([@RonaldEAM](https://github.com/RonaldEAM))
+
+---
+
 # v0.5.2 (Thu Aug 31 2023)
 
 #### 🐛 Bug Fix
