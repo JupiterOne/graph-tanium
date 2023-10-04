@@ -10,6 +10,8 @@ export const Steps = {
   USERS: 'fetch-users',
   APPLICATIONS: 'fetch-applications',
   INSTALLED_APPLICATIONS: 'fetch-installed-applications',
+  AVAILABLE_PATCHES: 'fetch-available-patches',
+  INSTALLED_PATCHES: 'fetch-installed-patches',
 };
 
 export const Entities: Record<
@@ -18,7 +20,9 @@ export const Entities: Record<
   | 'USER'
   | 'APPLICATION'
   | 'VERSION'
-  | 'INSTALLED_APPLICATION',
+  | 'INSTALLED_APPLICATION'
+  | 'AVAILABLE_PATCH'
+  | 'INSTALLED_PATCH',
   StepEntityMetadata
 > = {
   ACCOUNT: {
@@ -54,6 +58,16 @@ export const Entities: Record<
     _type: 'tanium_installed_application',
     _class: ['Record'],
   },
+  AVAILABLE_PATCH: {
+    resourceName: 'Available Patch',
+    _type: 'tanium_available_patch',
+    _class: ['Record'],
+  },
+  INSTALLED_PATCH: {
+    resourceName: 'Installed Patch',
+    _type: 'tanium_installed_patch',
+    _class: ['Record'],
+  },
 };
 export const Relationships: Record<
   | 'ACCOUNT_HAS_ENDPOINT'
@@ -61,6 +75,8 @@ export const Relationships: Record<
   | 'ACCOUNT_HAS_APPLICATION'
   | 'APPLICATION_HAS_VERSION'
   | 'ENDPOINT_HAS_INSTALLED_APPLICATION'
+  | 'ENDPOINT_HAS_AVAILABLE_PATCH'
+  | 'ENDPOINT_HAS_INSTALLED_PATCH'
   | 'INSTALLED_APPLICATION_IS_VERSION',
   StepRelationshipMetadata
 > = {
@@ -92,6 +108,18 @@ export const Relationships: Record<
     sourceType: Entities.ENDPOINT._type,
     targetType: Entities.INSTALLED_APPLICATION._type,
     _type: 'tanium_endpoint_has_installed_application',
+    _class: RelationshipClass.HAS,
+  },
+  ENDPOINT_HAS_AVAILABLE_PATCH: {
+    sourceType: Entities.ENDPOINT._type,
+    targetType: Entities.AVAILABLE_PATCH._type,
+    _type: 'tanium_endpoint_has_available_patch',
+    _class: RelationshipClass.HAS,
+  },
+  ENDPOINT_HAS_INSTALLED_PATCH: {
+    sourceType: Entities.ENDPOINT._type,
+    targetType: Entities.INSTALLED_PATCH._type,
+    _type: 'tanium_endpoint_has_installed_patch',
     _class: RelationshipClass.HAS,
   },
   INSTALLED_APPLICATION_IS_VERSION: {

@@ -93,8 +93,10 @@ The following entities are created:
 | Account               | `tanium_account`               | `Account`       |
 | Application           | `tanium_application`           | `Application`   |
 | Application Version   | `tanium_application_version`   | `Record`        |
+| Available Patch       | `tanium_available_patch`       | `Record`        |
 | Endpoint              | `tanium_endpoint`              | `Host`          |
 | Installed Application | `tanium_installed_application` | `Record`        |
+| Installed Patch       | `tanium_installed_patch`       | `Record`        |
 | User                  | `tanium_user`                  | `User`          |
 
 ### Relationships
@@ -107,7 +109,9 @@ The following relationships are created:
 | `tanium_account`               | **HAS**               | `tanium_endpoint`              |
 | `tanium_account`               | **HAS**               | `tanium_user`                  |
 | `tanium_application`           | **HAS**               | `tanium_application_version`   |
+| `tanium_endpoint`              | **HAS**               | `tanium_available_patch`       |
 | `tanium_endpoint`              | **HAS**               | `tanium_installed_application` |
+| `tanium_endpoint`              | **HAS**               | `tanium_installed_patch`       |
 | `tanium_installed_application` | **IS**                | `tanium_application_version`   |
 
 <!--

@@ -16,6 +16,7 @@ import {
 } from './gql-types';
 import { Queries } from './queries';
 import { TaniumUser } from './rest-types';
+import { normalizeSensorColumns } from '../utils/normalizeSensorColumns';
 
 export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
 
@@ -124,6 +125,58 @@ export class APIClient {
       response.data?.data?.endpoints.edges[0]?.node.installedApplications;
     for (const installedApplication of installedApplications || []) {
       await iteratee(installedApplication);
+    }
+  }
+
+  public async iterateApplicablePatches(
+    computerId: string,
+    iteratee: ResourceIteratee<ApplicablePatch>,
+  ): Promise<void> {
+    const response = await this.makeRequest<{
+      data: { endpoints: EndpointConnection };
+    }>({
+      url: '/plugin/products/gateway/graphql',
+      method: 'POST',
+      data: {
+        query: Queries.APPLICABLE_PATCHES_QUERY,
+        variables: {
+          filter: { path: 'computerID', value: computerId },
+        },
+      },
+    });
+
+    const sensorColumns =
+      response.data?.data?.endpoints.edges[0]?.node.sensorReadings.columns;
+    const applicablePatches =
+      normalizeSensorColumns<ApplicablePatch>(sensorColumns);
+    for (const applicablePatch of applicablePatches || []) {
+      await iteratee(applicablePatch);
+    }
+  }
+
+  public async iterateInstalledPatches(
+    computerId: string,
+    iteratee: ResourceIteratee<InstalledPatch>,
+  ): Promise<void> {
+    const response = await this.makeRequest<{
+      data: { endpoints: EndpointConnection };
+    }>({
+      url: '/plugin/products/gateway/graphql',
+      method: 'POST',
+      data: {
+        query: Queries.INSTALLED_PATCHES_QUERY,
+        variables: {
+          filter: { path: 'computerID', value: computerId },
+        },
+      },
+    });
+
+    const sensorColumns =
+      response.data?.data?.endpoints.edges[0]?.node.sensorReadings.columns;
+    const installedPatches =
+      normalizeSensorColumns<InstalledPatch>(sensorColumns);
+    for (const installedPatch of installedPatches || []) {
+      await iteratee(installedPatch);
     }
   }
 
