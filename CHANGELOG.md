@@ -1,3 +1,15 @@
+# v0.6.1 (Fri Oct 06 2023)
+
+#### 🐛 Bug Fix
+
+- INT-9002 - fix duplicate issues [#22](https://github.com/JupiterOne/graph-tanium/pull/22) (ronald.arias@contractor.jupiterone.com)
+
+#### Authors: 1
+
+- Ronald Arias ([@RonaldEAM](https://github.com/RonaldEAM))
+
+---
+
 # v0.6.0 (Wed Oct 04 2023)
 
 #### 🚀 Enhancement
