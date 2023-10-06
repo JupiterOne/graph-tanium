@@ -44,15 +44,18 @@ async function fetchAvailablePatches({
           }
           const availablePatchEntity =
             createAvailablePatchEntity(applicablePatch);
-          await jobState.addEntity(availablePatchEntity);
+          if (!jobState.hasKey(availablePatchEntity._key)) {
+            await jobState.addEntity(availablePatchEntity);
+          }
 
-          await jobState.addRelationship(
-            createDirectRelationship({
-              _class: RelationshipClass.HAS,
-              from: endpointEntity,
-              to: availablePatchEntity,
-            }),
-          );
+          const relationship = createDirectRelationship({
+            _class: RelationshipClass.HAS,
+            from: endpointEntity,
+            to: availablePatchEntity,
+          });
+          if (!jobState.hasKey(relationship._key)) {
+            await jobState.addRelationship(relationship);
+          }
         },
       );
     },
