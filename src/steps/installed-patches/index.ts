@@ -47,15 +47,18 @@ async function fetchInstalledPatches({
           }
           const installedPatchEntity =
             createInstalledPatchEntity(installedPatch);
-          await jobState.addEntity(installedPatchEntity);
+          if (!jobState.hasKey(installedPatchEntity._key)) {
+            await jobState.addEntity(installedPatchEntity);
+          }
 
-          await jobState.addRelationship(
-            createDirectRelationship({
-              _class: RelationshipClass.HAS,
-              from: endpointEntity,
-              to: installedPatchEntity,
-            }),
-          );
+          const relationship = createDirectRelationship({
+            _class: RelationshipClass.HAS,
+            from: endpointEntity,
+            to: installedPatchEntity,
+          });
+          if (!jobState.hasKey(relationship._key)) {
+            await jobState.addRelationship(relationship);
+          }
         },
       );
     },
