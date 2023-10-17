@@ -1,0 +1,12 @@
+openapi: 3.0.1
+info:
+  title: '@jupiterone/graph-tanium'
+  description: An integration and graph converter for Tanium
+  x-cortex-git:
+    github:
+      repository: JupiterOne/graph-tanium
+  x-cortex-owners:
+    - type: group
+      name: JupiterOne/integrations
+  x-cortex-service-groups: tier-4
+  x-cortex-tag: '@jupiterone/graph-tanium'
